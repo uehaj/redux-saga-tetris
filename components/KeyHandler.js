@@ -5,14 +5,12 @@ import * as Actions from '../actions';
 
 class KeyHandler extends Component {
   handleKeyDown(event) {
-    console.log(event);
     if (this.props.captureKeys.includes(event.keyCode)) {
       this.props.dispatch(Actions.uiKeyDown(event.keyCode));
     }
   }
 
   componentDidMount() {
-    console.log(this.props);
     document.body.addEventListener('keydown', this.handleKeyDown.bind(this));
   }
 
@@ -25,13 +23,4 @@ class KeyHandler extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return state;
-}
-
-function mapDispatchToProps(dispatch) {
-  return { dispatch };
-}
-
-//export default withRedux(initStore, state => state)(KeyHandler);
-export default connect(mapStateToProps, mapDispatchToProps)(KeyHandler);
+export default connect(state => state, (dispatch) => {return {dispatch} })(KeyHandler);

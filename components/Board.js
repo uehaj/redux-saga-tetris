@@ -19,7 +19,6 @@ export default (props) => {
               <div>
               {
                 row.map((cell) => {
-                  console.log(cell);
                   if (cell == 0) {
                     return <span className="empty">　</span>;
                   }
