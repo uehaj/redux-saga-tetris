@@ -3,3 +3,4 @@
 // SYS_* ... System Action
 // SET_*, UPDATE_* ... Reducer Action
 export const UI_BUTTON_CLICKED = 'UI_BUTTON_CLICKED';
+export const UI_KEYDOWN = 'UI_KEYDOWN';

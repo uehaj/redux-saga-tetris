@@ -19,5 +19,6 @@
     "redux-actions": "^1.2.1",
     "redux-logger": "^2.8.1",
     "redux-saga": "^0.14.3"
-  }
+  },
+  "devDependencies": {}
 }

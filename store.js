@@ -5,7 +5,29 @@ import * as Types from './types';
 import rootSaga from './sagas';
 
 const initialState = {
-  counter: 0
+  counter: 0,
+  board: [ // 10x22
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+  ],
 };
 
 export const reducer = (state = initialState, action) => {
@@ -13,7 +35,7 @@ export const reducer = (state = initialState, action) => {
     case Types.UI_BUTTON_CLICKED: {
       return {
         ...state,
-        counter: state.count + 1
+        counter: state.counter + 1
       };
     };
     default: return state;
