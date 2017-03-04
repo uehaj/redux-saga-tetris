@@ -2,14 +2,14 @@ import React from 'react';
 import { reducer, initStore, startClock } from '../store';
 import withRedux from 'next-redux-wrapper';
 import * as Actions from '../actions';
-import * as Keys from '../keys';
+import * as Keys from '../game/keys';
 import KeyHandler from '../components/KeyHandler';
-import Board from '../components/Board';
+import PlayField from '../components/PlayField';
 
 const Index = (props) => (
     <div>
     <KeyHandler captureKeys={[...Keys.HJKL, ...Keys.ARROW]} />
-    {props.board && <Board board={props.board}/>}
+    {props.board && <PlayField board={props.board}/>}
     </div>
 );
 
