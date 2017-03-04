@@ -1,0 +1,14 @@
+{
+  "name": "redux-saga-tetris",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "UEHARA, Junji <uehaj@jggug.org> (https://github.com/uehaj)",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^1.2.3"
+  }
+}
