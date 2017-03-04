@@ -5,39 +5,35 @@ import * as Types from './types';
 import rootSaga from './sagas';
 
 const initialState = {
-  counter: 0,
-  board: [ // 10x22
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0],
-  ],
+  board: null,
 };
 
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case Types.INITIALIZE: {
+      return { board: action.payload };
+    };
     case Types.UI_BUTTON_CLICKED: {
       return {
         ...state,
-        counter: state.counter + 1
+        counter: state.counter + 1,
       };
     };
+  case Types.SET_BOARD: {
+    const {x, y, cell} = action.payload;
+    return {
+      ...state,
+      board: [
+        ...state.board.slice(0, y),
+        [
+          ...state.board[y].slice(0, x),
+          cell,
+          ...state.board[y].slice(x+1, state.board[y].length),
+        ],
+        ...state.board.slice(y + 1, state.board.length)
+       ],
+    };
+  };
     default: return state;
   }
 };
