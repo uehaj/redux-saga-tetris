@@ -2,30 +2,8 @@ import { delay } from 'redux-saga';
 import { race, take, put, call, fork, join, cancel, takeEvery, takeLatest } from 'redux-saga/effects';
 import * as Actions from './actions';
 import * as Types from './types';
-import * as Keys from './keys';
-
-const initialBoard = [ // 10x22
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0],
-];
+import * as Keys from './game/keys';
+import * as Board from './game/board';
 
 function* timeTick() {
   while (true) {
@@ -72,7 +50,7 @@ function* game() {
 // single entry point to start all Sagas at once
 export default function* rootSaga() {
   //  yield fork(timeTick);
-  yield put(Actions.initialize(initialBoard));
+  yield put(Actions.initialize(Board.initialBoard));
   yield fork(game);
 //  yield takeLatest(Types.UI_BUTTON_CLICKED, buttonClicked);
 //  yield takeLatest(Types.UI_KEYDOWN, keyLogger);

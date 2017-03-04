@@ -3,6 +3,7 @@ import createSagaMiddleware from 'redux-saga';
 import createLogger from 'redux-logger';
 import * as Types from './types';
 import rootSaga from './sagas';
+import * as Board from './game/board.js';
 
 const initialState = {
   board: null,
@@ -23,15 +24,7 @@ export const reducer = (state = initialState, action) => {
     const {x, y, cell} = action.payload;
     return {
       ...state,
-      board: [
-        ...state.board.slice(0, y),
-        [
-          ...state.board[y].slice(0, x),
-          cell,
-          ...state.board[y].slice(x+1, state.board[y].length),
-        ],
-        ...state.board.slice(y + 1, state.board.length)
-       ],
+      board: Board.setBoard(state.board, x, y, cell)
     };
   };
     default: return state;

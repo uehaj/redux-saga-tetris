@@ -14,21 +14,21 @@ export default (props) => {
       </style>
       <div className="board">
       {
-        props.board.map((row) => {
+        props.board.map((row, y) => {
           return (
-              <div>
+              <div key={y}>
               {
-                row.map((cell) => {
+                row.map((cell, x) => {
                   if (cell == 0) {
-                    return <span className="empty">　</span>;
+                    return <span key={x} className="empty">　</span>;
                   }
                   else {
-                    return <span className="block">■</span>;
+                    return <span key={x} className="block">■</span>;
                   }
                 })
               }
               </div>
-              );
+          );
         })
       }
       </div>
