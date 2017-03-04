@@ -4,11 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "next"
   },
   "author": "UEHARA, Junji <uehaj@jggug.org> (https://github.com/uehaj)",
   "license": "ISC",
   "dependencies": {
-    "next": "^1.2.3"
+    "next": "^2.0.0-beta",
+    "next-redux-wrapper": "^1.0.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.1",
+    "redux": "^3.6.0",
+    "redux-actions": "^1.2.1",
+    "redux-logger": "^2.8.1",
+    "redux-saga": "^0.14.3"
   }
 }
