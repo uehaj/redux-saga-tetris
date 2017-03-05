@@ -22,11 +22,10 @@ export const reducer = (state = initialState, action) => {
       board: Board.updateCell(state.board, x, y, cell)
     };
   };
-  case Types.SET_PIECE: {
-    const { x, y, piece, spin } = action.payload;
+  case Types.SET_BOARD: {
     return {
       ...state,
-      board: Pieces.setPiece(state.board, x, y, piece, spin)
+      board: action.payload,
     };
   };
   default: return state;

@@ -5,6 +5,7 @@ import * as Actions from '../actions';
 
 class KeyHandler extends Component {
   handleKeyDown(event) {
+    console.log(event);
     if (this.props.captureKeys.includes(event.keyCode)) {
       this.props.dispatch(Actions.uiKeyDown(event.keyCode));
     }
