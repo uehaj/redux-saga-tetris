@@ -1,4 +1,5 @@
 export const INITIAL_BOARD = [ // 10x22
+  [-1, -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
   [-1, 0,0,0,0,0,0,0,0,0,0,-1],
   [-1, 0,0,0,0,0,0,0,0,0,0,-1],
   [-1, 0,0,0,0,0,0,0,0,0,0,-1],
@@ -33,4 +34,8 @@ export function updateCell(board, x, y, cell) {
     ],
     ...board.slice(y + 1, board.length)
   ];
+}
+
+export function getCell(board, x, y) {
+  return board[y][x];
 }

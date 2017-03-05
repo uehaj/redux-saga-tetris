@@ -1,15 +1,13 @@
-import React from 'react';
 import { reducer, initStore, startClock } from '../store';
 import withRedux from 'next-redux-wrapper';
-import * as Actions from '../actions';
-import * as Keys from '../game/keys';
 import KeyHandler from '../components/KeyHandler';
-import PlayField from '../components/PlayField';
+import * as Keys from '../game/keys';
 
 const Index = (props) => (
     <div>
-    <KeyHandler captureKeys={[...Keys.ALL]} />
-    {props.board && <PlayField board={props.board}/>}
+    <KeyHandler captureKeys={Keys.ALL} />
+    <h1>TETRIS</h1>
+    (S) to start
     </div>
 );
 
