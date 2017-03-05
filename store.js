@@ -3,31 +3,33 @@ import createSagaMiddleware from 'redux-saga';
 import createLogger from 'redux-logger';
 import * as Types from './types';
 import rootSaga from './sagas';
-import * as Board from './game/board.js';
+import * as Board from './game/board';
+import * as Pieces from './game/pieces';
 
 const initialState = {
-  board: null,
+  board: Board.INITIAL_BOARD
 };
 
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case Types.INITIALIZE: {
-      return { board: action.payload };
-    };
     case Types.UI_BUTTON_CLICKED: {
-      return {
-        ...state,
-        counter: state.counter + 1,
-      };
+      return state;
     };
-  case Types.SET_BOARD: {
-    const {x, y, cell} = action.payload;
+  case Types.UPDATE_CELL: {
+    const { x, y, cell } = action.payload;
     return {
       ...state,
-      board: Board.setBoard(state.board, x, y, cell)
+      board: Board.updateCell(state.board, x, y, cell)
     };
   };
-    default: return state;
+  case Types.SET_PIECE: {
+    const { x, y, piece, spin } = action.payload;
+    return {
+      ...state,
+      board: Pieces.setPiece(state.board, x, y, piece, spin)
+    };
+  };
+  default: return state;
   }
 };
 

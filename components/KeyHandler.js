@@ -23,4 +23,4 @@ class KeyHandler extends Component {
   }
 }
 
-export default connect(state => state, (dispatch) => {return {dispatch} })(KeyHandler);
+export default connect(state => state, dispatch => { return {dispatch}; })(KeyHandler);

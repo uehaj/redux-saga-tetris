@@ -12,4 +12,7 @@ export const KEY_RIGHT = 39;
 
 export const ARROW = [KEY_DOWN, KEY_LEFT, KEY_UP, KEY_RIGHT];
 export const HJKL = [KEY_H, KEY_J, KEY_K, KEY_L];
-
+export const ALL = [...ARROW,
+                    ...HJKL,
+                    KEY_ESC,
+                    KEY_SPC];
