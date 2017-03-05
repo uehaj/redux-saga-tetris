@@ -5,10 +5,15 @@ import * as Types from './types';
 import * as Keys from './game/keys';
 import * as Board from './game/board';
 
+let x = 3;
+let y = 0;
+let spin = 0;
+
 function* timeTick() {
   while (true) {
     yield delay(1000);
-    yield put(Actions.uiButtonClicked());
+    y++;
+    yield put(Actions.setPiece({x, y, piece:0, spin}));
   }
 }
 
@@ -21,27 +26,24 @@ function* keyLogger(key, action) {
 }
 
 function* game() {
-  let x = 0;
-  let y = 0;
   while (true) {
     const keyDown = yield take(Types.UI_KEYDOWN);
     console.log(keyDown);
     switch (keyDown.payload) {
     case Keys.KEY_H:
       x--;
-      yield put(Actions.setBoard({x, y, cell:1}));
       break;
     case Keys.KEY_J:
       y++;
-      yield put(Actions.setBoard({x, y, cell:1}));
       break;
     case Keys.KEY_K:
       y--;
-      yield put(Actions.setBoard({x, y, cell:1}));
       break;
     case Keys.KEY_L:
       x++;
-      yield put(Actions.setBoard({x, y, cell:1}));
+      break;
+    case Keys.KEY_SPC:
+      spin = (spin+1) % 4;
       break;
     }
   }
@@ -49,8 +51,7 @@ function* game() {
 
 // single entry point to start all Sagas at once
 export default function* rootSaga() {
-  //  yield fork(timeTick);
-  yield put(Actions.initialize(Board.initialBoard));
+  yield fork(timeTick);
   yield fork(game);
 //  yield takeLatest(Types.UI_BUTTON_CLICKED, buttonClicked);
 //  yield takeLatest(Types.UI_KEYDOWN, keyLogger);

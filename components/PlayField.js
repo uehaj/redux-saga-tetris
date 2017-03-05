@@ -1,4 +1,12 @@
-export default (props) => {
+import Board from "../game/board.js";
+//import { connect } from 'react-redux';
+import withRedux from 'next-redux-wrapper';
+import { reducer, initStore, startClock } from '../store';
+
+const PlayField = (props) => {
+  console.log(props);
+  console.log(props.board);
+  console.log(props.board.toString());
   return (
     <div>
       <style jsx>{`
@@ -35,3 +43,16 @@ export default (props) => {
     </div>
   );
 }
+
+function mapStateToProps(state) {
+  console.log("***", state);
+  return state;
+}
+
+function mapDispatchToProps(dispatch) {
+  return { dispatch };
+}
+
+//export default connect(mapStateToProps, mapDispatchToProps)(PlayField);
+//export default connect(state => state, dispatch => { return {dispatch}; })(PlayField);
+export default withRedux(initStore, state => { console.log("***",state);return state;})(PlayField);

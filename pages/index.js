@@ -8,7 +8,7 @@ import PlayField from '../components/PlayField';
 
 const Index = (props) => (
     <div>
-    <KeyHandler captureKeys={[...Keys.HJKL, ...Keys.ARROW]} />
+    <KeyHandler captureKeys={[...Keys.ALL]} />
     {props.board && <PlayField board={props.board}/>}
     </div>
 );
