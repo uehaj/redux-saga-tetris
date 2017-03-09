@@ -1,16 +1,21 @@
 import React from 'react';
-import { reducer, initStore, startClock } from '../store';
-import withRedux from 'next-redux-wrapper';
-import * as Actions from '../actions';
-import * as Keys from '../game/keys';
+import withRedux from '../utils/withRedux';
 import KeyHandler from '../components/KeyHandler';
+import * as Keys from '../game/keys';
 import PlayField from '../components/PlayField';
+import { connect } from 'react-redux';
 
-const Game = (props) => (
+const Game = (props) => {
+  console.log(props.board);
+  return (
     <div>
-    <KeyHandler captureKeys={[...Keys.ALL]} />
-    {props.board && <PlayField board={props.board}/>}
+      <KeyHandler captureKeys={[...Keys.ALL]} />
+      {props.board && <PlayField />}
     </div>
-);
+  );
+};
 
-export default withRedux(initStore, state => state)(Game);
+export default withRedux(connect(
+  state => state,
+  dispatch => ({dispatch})
+)(Game));

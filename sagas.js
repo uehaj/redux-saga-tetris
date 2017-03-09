@@ -134,7 +134,7 @@ function* game() {
 }
 
 export default function* rootSaga() {
-  yield call(() => Promise.resolve(Router.push('/')));
+//  yield call(() => Promise.resolve(Router.push('/')));
   while (true) {
     let keyDown;
     do {
