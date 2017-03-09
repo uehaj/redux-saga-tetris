@@ -4,6 +4,11 @@ import withRedux from 'next-redux-wrapper';
 import * as Actions from '../actions';
 
 class KeyHandler extends Component {
+
+  constructor(props) {
+    super(props);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
   handleKeyDown(event) {
     console.log(event);
     if (this.props.captureKeys.includes(event.keyCode)) {
@@ -12,11 +17,11 @@ class KeyHandler extends Component {
   }
 
   componentDidMount() {
-    document.body.addEventListener('keydown', this.handleKeyDown.bind(this));
+    document.body.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.handleKeyDown.bind(this));
+    document.body.removeEventListener('keydown', this.handleKeyDown);
   }
 
   render() {
