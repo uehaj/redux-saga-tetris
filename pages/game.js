@@ -6,7 +6,6 @@ import PlayField from '../components/PlayField';
 import { connect } from 'react-redux';
 
 const Game = (props) => {
-  console.log(props.board);
   return (
     <div>
       <KeyHandler captureKeys={[...Keys.ALL]} />
