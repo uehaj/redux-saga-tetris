@@ -116,6 +116,10 @@ export function unSetPiece(board, xPos, yPos, piece, spin) {
   return setPiece(board, xPos, yPos, piece, spin, true);
 }
 
+/*
+ * Wheather you can put a piect onto board position (xPos, yPos)
+ * with the spin.
+ */
 export function canPut(board, xPos, yPos, piece, spin) {
   const pieceArray = PIECES[spin][piece];
   for (let y=0; y<pieceArray.length; y++) {
