@@ -9,6 +9,7 @@ import { DockableSagaView, createSagaMonitor } from 'redux-saga-devtools';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 const initStore = (reducer, isServer) => {
+  // server side rendering or first time in browser
   if ((isServer && typeof window === 'undefined') || (typeof window !== 'undefined' && !window.store)) {
     const sagaMonitor = createSagaMonitor();
     const sagaMiddleware = createSagaMiddleware({sagaMonitor});
@@ -19,12 +20,12 @@ const initStore = (reducer, isServer) => {
                                )
                               );
     sagaMiddleware.run(rootSaga);
-    if (!!window && !window.store) {
+    if (typeof window !== 'undefined' && !window.store) {
       window.store = result;
       window.sagaMonitor = sagaMonitor;
     }
     return [result, sagaMonitor];
-  } else if (!!window && window.store) {
+  } else if (typeof window !== 'undefined' && window.store) {
     return [window.store, window.sagaMonitor];
   }
 };
