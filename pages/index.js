@@ -1,14 +1,16 @@
-import { reducer, initStore, startClock } from '../store';
-import withRedux from 'next-redux-wrapper';
+import { DockableSagaView } from 'redux-saga-devtools';
+import withRedux from '../utils/withRedux';
 import KeyHandler from '../components/KeyHandler';
 import * as Keys from '../game/keys';
 
-const Index = (props) => (
+const Index = (props) => {
+  return (
     <div>
-    <KeyHandler captureKeys={Keys.ALL} />
-    <h1>TETRIS</h1>
-    (S) to start
+      <KeyHandler captureKeys={Keys.ALL} />
+      <h1>TETRIS</h1>
+      (S) to start
     </div>
-);
+  );
+};
 
-export default withRedux(initStore, state => state)(Index);
+export default withRedux(Index);
