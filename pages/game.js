@@ -8,8 +8,28 @@ import { connect } from 'react-redux';
 const Game = (props) => {
   return (
     <div>
+      <style jsx>{`
+        .container {
+          display: flex;
+          flex-flow: row wrap;
+        }
+        .info {
+          flex-grow: 1;
+        }
+        .playfield {
+          flex-grow: 3;
+        }
+      `}
+      </style>
       <KeyHandler captureKeys={[...Keys.ALL]} />
-      {props.board && <PlayField />}
+      <div className='container'>
+        <div className='info'>
+          SCORE 100
+        </div>
+        <div className='playfield'>
+         {props.board && <PlayField />}
+        </div>
+      </div>
     </div>
   );
 };
