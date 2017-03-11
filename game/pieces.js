@@ -98,13 +98,17 @@ const PIECES = [
   ],
 ];
 
+function isEmpty(cell) {
+  return cell <= 0;
+}
+
 export function setPiece(board, xPos, yPos, piece, spin, unset=false) {
   const pieceArray = PIECES[spin][piece];
   let result = board;
   for (let y=0; y<pieceArray.length; y++) {
     for (let x=0; x<pieceArray[y].length; x++) {
       const cellToPut = unset ? 0 : pieceArray[y][x];
-      if (pieceArray[y][x] != 0) {
+      if (!isEmpty(pieceArray[y][x])) {
         result = Board.updateCell(result, xPos+x, yPos+y, cellToPut);
       }
     }
@@ -125,7 +129,7 @@ export function canPut(board, xPos, yPos, piece, spin) {
   for (let y=0; y<pieceArray.length; y++) {
     for (let x=0; x<pieceArray[y].length; x++) {
       const cell = pieceArray[y][x];
-      if (cell != 0 && Board.getCell(board, xPos+x, yPos+y) != 0) {
+      if (!isEmpty(cell) && !isEmpty(Board.getCell(board, xPos+x, yPos+y))) {
         return false;
       }
     }

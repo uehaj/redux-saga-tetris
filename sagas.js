@@ -7,18 +7,9 @@ import * as Board from './game/board';
 import * as Pieces from './game/pieces';
 import Router from 'next/router';
 
-let x;
-let y;
-let piece;
-let spin;
-let nextX;
-let nextY;
-let nextPiece;
-let nextSpin;
-
 function* timeTick() {
   while (true) {
-    yield delay(1000);
+    yield delay(500);
     yield put(Actions.uiKeyDown(Keys.KEY_ARROW_DOWN));
   }
 }
@@ -27,41 +18,37 @@ function* buttonClicked() {
   console.log("hoge");
 }
 
-function* keyLogger(key, action) {
-  console.log("key=", key, "action=", action);
-}
-
-function canPut(board, x, y, piece, spin,
-                nextX, nextY, nextPiece, nextSpin) {
+function canPutNext(board, x, y, piece, spin,
+                    nextX, nextY, nextPiece, nextSpin) {
   const newBoard = Pieces.unSetPiece(board, x, y, piece, spin);
   return Pieces.canPut(newBoard, nextX, nextY, nextPiece, nextSpin);
 }
 
-function* movePiece(board,
-                    x, y, piece, spin,
-                    nextX, nextY, nextPiece, nextSpin) {
+function movePieceTo(board,
+                     x, y, piece, spin,
+                     nextX, nextY, nextPiece, nextSpin) {
 
   const cleared = Pieces.unSetPiece(board,
                                     x, y, piece, spin);
   const newBoard = Pieces.setPiece(cleared,
                                    nextX, nextY, nextPiece, nextSpin);
-  yield put(Actions.setBoard(newBoard));
-
+  return newBoard;
 }
 
 function* pieceFall() {
-  x = 3;
-  y = 1;
-  piece = Math.floor(Math.random() * 7);
-  spin = 0;
-  nextX = x;
-  nextY = y;
-  nextPiece = piece;
-  nextSpin = spin;
+  let x = 3;
+  let y = 1;
+  let piece = Math.floor(Math.random() * 7);
+  let spin = 0;
+  let nextX = x;
+  let nextY = y;
+  let nextPiece = piece;
+  let nextSpin = spin;
   let board = yield select((state => state.board));
-  yield* movePiece(board,
-                   x, y, piece, spin,
-                   nextX, nextY, nextPiece, nextSpin);
+  board =  movePieceTo(board,
+                       x, y, piece, spin,
+                       nextX, nextY, nextPiece, nextSpin);
+  yield put(Actions.setBoard(board));
   do {
     const keyDown = yield take(Types.UI_KEY_DOWN);
     switch (keyDown.payload) {
@@ -90,14 +77,15 @@ function* pieceFall() {
       yield put(Actions.sysGameQuit());
       return;
     }
+
     board = yield select((state => state.board));
     if (x != nextX ||
         y != nextY ||
         piece != nextPiece ||
         spin != nextSpin) {
-      if (!canPut(board,
-                  x, y, piece, spin,
-                  nextX, nextY, nextPiece, nextSpin)) {
+      if (!canPutNext(board,
+                      x, y, piece, spin,
+                      nextX, nextY, nextPiece, nextSpin)) {
         nextX = x;
         nextY = y;
         nextPiece = piece;
@@ -105,18 +93,18 @@ function* pieceFall() {
         continue;
       }
 
-      yield* movePiece(board,
-                       x, y, piece, spin,
-                       nextX, nextY, nextPiece, nextSpin);
-
+      board = movePieceTo(board,
+                          x, y, piece, spin,
+                          nextX, nextY, nextPiece, nextSpin);
+      yield put(Actions.setBoard(board));
       x = nextX;
       y = nextY;
       piece = nextPiece;
       spin = nextSpin;
     }
-  } while (canPut(board,
-                  x, y, piece, spin,
-                  x, y+1, piece, spin));
+  } while (canPutNext(board,
+                      x, y, piece, spin,
+                      x, y+1, piece, spin));
 }
 
 function* game() {
@@ -134,7 +122,7 @@ function* game() {
 }
 
 export default function* rootSaga() {
-//  yield call(() => Promise.resolve(Router.push('/')));
+  yield call(() => Promise.resolve(Router.push('/')));
   while (true) {
     let keyDown;
     do {
