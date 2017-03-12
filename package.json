@@ -4,14 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "next"
+    "dev": "next",
+    "test": "jest --watch"
   },
   "author": "UEHARA, Junji <uehaj@jggug.org> (https://github.com/uehaj)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "next": "^2.0.0-beta",
-    "next-redux-wrapper": "^1.0.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.1",
@@ -22,6 +21,10 @@
     "redux-saga": "^0.14.3"
   },
   "devDependencies": {
-    "redux-saga-devtools": "^0.1.1"
+    "babel-jest": "^16.0.0",
+    "jest-cli": "^19.0.2",
+    "normalize.css": "^5.0.0",
+    "redux-saga-devtools": "^0.1.1",
+    "babel-preset-latest": "6.22.0"
   }
 }
