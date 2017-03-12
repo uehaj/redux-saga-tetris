@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import withRedux from 'next-redux-wrapper';
 import * as Actions from '../actions';
 
 class KeyHandler extends Component {
