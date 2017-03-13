@@ -50,7 +50,7 @@ export default function withRedux(ReduxComponent) {
           <Provider store={this.store}>
             <div>
               <ReduxComponent {...this.props} />
-              <DockableSagaView monitor={ this.sagaMonitor } />
+              {/*<DockableSagaView monitor={ this.sagaMonitor } />*/}
             </div>
           </Provider>
       );

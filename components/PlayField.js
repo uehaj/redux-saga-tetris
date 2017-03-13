@@ -9,21 +9,28 @@ const PlayField = (props) => {
           height: 14px;
         }
         .empty {
+            box-sizing: border-box;
             display: inline-block;
             background-color: #eeeeff;
             height: 14px;
             width: 14px;
+            border-left: 1px solid #9999ff;
+            border-top: 1px solid #9999ff;
         }
         .wall {
+            box-sizing: border-box;
             display: inline-block;
             height: 14px;
             width: 14px;
             background-color: brown;
+            border: 3px outset brown;
         }
         .block {
+            box-sizing: border-box;
             display: inline-block;
             height: 14px;
             width: 14px;
+            border: 2px outset;
         }
         .block1 {
             background-color: red;
