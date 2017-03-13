@@ -9,8 +9,7 @@ import Router from 'next/router';
 
 function* timeTick() {
   while (true) {
-    yield delay(1000);
-    yield put(Actions.uiKeyDown(Keys.KEY_ARROW_DOWN));
+    yield delay(100);
     yield put(Actions.sysTimeTick());
   }
 }
@@ -26,21 +25,50 @@ function* pieceFall() {
   yield* updateBoard(board => piece.setTo(board));
 
   let board = yield select((state => state.board));
-  while (!piece.reachedToBottom(board)) {
-    const {keyDown, timeTick} = yield race({
+  let tick = 0;
+  let slackTime = false;
+  let slackCounter = 0;
+  while (true) {
+    if (piece.reachedToBottom(board)) {
+      // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
+      if (slackTime == false) {
+        slackTime = true;
+        slackCounter = 10;
+        console.log("  slack time!");
+      }
+      else if (slackCounter == 0) {
+        break;
+      }
+      else {
+        slackCounter--;
+        if (keyDown && keyDown.payload == Keys.KEY_ARROW_DOWN){
+          // 固定時間時間中に下を押したときは固定時間を解除。
+          slackCounter = 0;
+        }
+      }
+    }
+    else {
+      slackTime = false;
+    }
+    const { keyDown, timeTick } = yield race({
       keyDown: take(Types.UI_KEY_DOWN),
       timeTick: take(Types.SYS_TIME_TICK),
     });
-    if (keyDown && keyDown.payload === Keys.KEY_QUIT) {
+    if (keyDown && keyDown.payload === Keys.KEY_Q) {
       yield put(Actions.sysGameQuit());
     }
-    const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
-    if (nextPiece !== piece) {
-      let [newBoard, newPiece] = nextPiece.tryPutTo(board, piece);
-      yield put(Actions.setBoard(newBoard));
-      piece = newPiece;
+    if (timeTick) {
+      tick++;
     }
-    board = yield select((state => state.board));
+    if (keyDown || tick % 10 == 0) {
+      const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
+      if (nextPiece !== piece) {
+        let [newBoard, newPiece] = nextPiece.tryPutTo(board, piece);
+        yield put(Actions.setBoard(newBoard));
+        piece = newPiece;
+      }
+      board = yield select((state => state.board));
+    }
   }
 }
 
@@ -64,7 +92,7 @@ export default function* rootSaga() {
     let keyDown;
     do {
       keyDown = yield take(Types.UI_KEY_DOWN);
-    } while (keyDown.payload != Keys.KEY_S); // Wait untill 's'
+    } while (keyDown.payload != Keys.KEY_S);
     yield put(Actions.sysGameStart());
     yield put(Actions.setGameRunning(true));
     yield fork(game);

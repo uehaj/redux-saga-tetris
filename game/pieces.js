@@ -1,8 +1,5 @@
 import * as Board from "./board";
 
-export const PIECE_MIN = 1;
-export const PIECE_MAX = 7;
-
 const PIECES = [
   [
     [[0,0,0,0],
@@ -97,6 +94,9 @@ const PIECES = [
      [0,7,0]],
   ],
 ];
+
+export const SPINS_NUM = PIECES.length;
+export const PIECES_NUM = PIECES[0].length;
 
 function isEmpty(cell) {
   return cell <= 0;
