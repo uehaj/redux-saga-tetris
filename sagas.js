@@ -1,11 +1,13 @@
 import { delay } from 'redux-saga';
 import { race, take, put, call, fork, join, select, cancel, takeEvery, takeLatest } from 'redux-saga/effects';
+import * as Config from "./game/config";
 import * as Actions from './actions';
 import * as Types from './types';
 import * as Keys from './game/keys';
 import * as Board from './game/board';
 import Piece from './game/Piece';
 import Router from 'next/router';
+import seedrandom from 'seedrandom';
 
 function* timeTick() {
   while (true) {
@@ -22,6 +24,7 @@ function* updateBoard(updater) {
 
 function* pieceFall() {
   let piece = new Piece(3, 1, Math.floor(Math.random() * 7), 0);
+  console.log(piece);
   yield* updateBoard(board => piece.setTo(board));
 
   let board = yield select((state => state.board));
@@ -31,17 +34,17 @@ function* pieceFall() {
   while (true) {
     if (piece.reachedToBottom(board)) {
       // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
-      if (slackTime == false) {
+      if (slackTime === false) {
         slackTime = true;
         slackCounter = 10;
         console.log("  slack time!");
       }
-      else if (slackCounter == 0) {
+      else if (slackCounter === 0) {
         break;
       }
       else {
         slackCounter--;
-        if (keyDown && keyDown.payload == Keys.KEY_ARROW_DOWN){
+        if (keyDown && keyDown.payload === Keys.KEY_ARROW_DOWN){
           // 固定時間時間中に下を押したときは固定時間を解除。
           slackCounter = 0;
         }
@@ -60,9 +63,10 @@ function* pieceFall() {
     if (timeTick) {
       tick++;
     }
-    if (keyDown || tick % 10 == 0) {
+    if (keyDown || tick % 10 === 0) {
       const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
       if (nextPiece !== piece) {
+        console.log('board=',board, 'piece=',piece);
         let [newBoard, newPiece] = nextPiece.tryPutTo(board, piece);
         yield put(Actions.setBoard(newBoard));
         piece = newPiece;
@@ -78,8 +82,10 @@ function* game() {
   let timeTickTask;
   try {
     timeTickTask = yield fork(timeTick);
-    for (let i=0; i<10; i++) {
+    let board = yield select((state => state.board));
+    while (!Board.isGameOver(board)) {
       yield* pieceFall();
+      board = yield select((state => state.board));
     }
   } finally {
     yield cancel(timeTickTask);
@@ -87,12 +93,14 @@ function* game() {
 }
 
 export default function* rootSaga() {
+  if (Config.PREDICTABLE_RANDOM) {
+    Math.seedrandom('tetris');
+  }
   yield call(() => Promise.resolve(Router.push('/')));
   while (true) {
-    let keyDown;
-    do {
-      keyDown = yield take(Types.UI_KEY_DOWN);
-    } while (keyDown.payload != Keys.KEY_S);
+    while ((yield take(Types.UI_KEY_DOWN)).payload != Keys.KEY_S) {
+      ;
+    }
     yield put(Actions.sysGameStart());
     yield put(Actions.setGameRunning(true));
     yield fork(game);

@@ -1,28 +1,28 @@
-import * as Pieces from './pieces';
+import * as pieceUtils from './pieceUtils';
 import * as Keys from './keys';
 
 export default class Piece {
   constructor(x, y, piece, spin) {
     this.x = x;
     this.y = y;
-    this.piece = (piece + Pieces.PIECES_NUM) % Pieces.PIECES_NUM;
-    this.spin = (spin + Pieces.SPINS_NUM) % Pieces.SPINS_NUM;
+    this.piece = (piece + pieceUtils.PIECES_NUM) % pieceUtils.PIECES_NUM;
+    this.spin = (spin + pieceUtils.SPINS_NUM) % pieceUtils.SPINS_NUM;
   }
 
   unsetTo(board) {
-    return Pieces.unSetPiece(board,
+    return pieceUtils.unSetPiece(board,
                              this.x, this.y, this.piece, this.spin);
   }
 
   setTo(board) {
-    return Pieces.setPiece(board,
+    return pieceUtils.setPiece(board,
                            this.x, this.y, this.piece, this.spin);
   }
 
   tryPutTo(board, oldPiece) {
-    const unsetBoard = Pieces.unSetPiece(board, oldPiece.x, oldPiece.y, oldPiece.piece, oldPiece.spin);
-    if (Pieces.canPut(unsetBoard, this.x, this.y, this.piece, this.spin)) {
-      const newBoard = Pieces.setPiece(unsetBoard, this.x, this.y, this.piece, this.spin);
+    const unsetBoard = pieceUtils.unSetPiece(board, oldPiece.x, oldPiece.y, oldPiece.piece, oldPiece.spin);
+    if (pieceUtils.canPut(unsetBoard, this.x, this.y, this.piece, this.spin)) {
+      const newBoard = pieceUtils.setPiece(unsetBoard, this.x, this.y, this.piece, this.spin);
       return [newBoard, this];
     }
     return [board, oldPiece];
