@@ -8,8 +8,8 @@ class KeyHandler extends Component {
     super(props);
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
+
   handleKeyDown(event) {
-    console.log("keydown:", event);
     if (this.props.captureKeys.includes(event.keyCode)) {
       this.props.dispatch(Actions.uiKeyDown(event.keyCode));
     }

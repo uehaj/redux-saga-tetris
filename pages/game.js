@@ -6,6 +6,10 @@ import Layout from '../components/Layout';
 import * as Keys from '../game/keys';
 import PlayField from '../components/PlayField';
 
+/**
+ * 
+ * @param {*} props 
+ */
 const Game = (props) => {
   return (
     <Layout>
@@ -17,9 +21,11 @@ const Game = (props) => {
           }
           .info {
             flex-grow: 1;
+            padding: 1em;
           }
           .playfield {
             flex-grow: 3;
+            padding: 1em;
           }
         `}
         </style>
@@ -31,6 +37,7 @@ const Game = (props) => {
           <div className='playfield'>
            {props.board && <PlayField />}
           </div>
+          {props.gameOver && <GameOver />}
         </div>
       </div>
     </Layout>

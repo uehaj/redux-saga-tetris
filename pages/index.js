@@ -8,10 +8,25 @@ import Layout from '../components/Layout';
 const Index = (props) => {
   return (
     <Layout>
-      <div>
+      <style jsx>{`
+          .container {
+            display: flex;
+            flex-flow: column nowrap;
+          }
+          .content {
+            flex-grow: 1;
+            padding: 1em;
+          }
+        `}
+      </style>
+      <div className='continer'>
         <KeyHandler captureKeys={Keys.ALL} />
-        <h1>TETRIS</h1>
-        (S) to start
+        <div className='content'>
+          <h1>TETRIS</h1>
+        </div>
+        <div className='content'>
+          (S) to start
+        </div>
       </div>
     </Layout>
   );
