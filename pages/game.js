@@ -12,7 +12,7 @@ import PlayField from '../components/PlayField';
  */
 const Game = (props) => {
   return (
-    <Layout>
+    <Layout modal={props.modal}>
       <div>
         <style jsx>{`
           .container {

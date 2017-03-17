@@ -7,7 +7,7 @@ import Layout from '../components/Layout';
 
 const Index = (props) => {
   return (
-    <Layout>
+    <Layout modal={props.modal}>
       <style jsx>{`
           .container {
             display: flex;

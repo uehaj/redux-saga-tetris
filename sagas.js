@@ -9,6 +9,17 @@ import Piece from './game/Piece';
 import Router from 'next/router';
 import seedrandom from 'seedrandom';
 
+// show modal dialog and get user response(Ok/Cancel) synchronously
+function* gameOver() {
+  yield put(Actions.setModal({ show: true, title: "GAME OVER" }));
+  const answer = yield race({
+    ok: take(Types.UI_MODAL_OK),
+    cancel: take(Types.UI_MODAL_CANCEL),
+  });
+  yield put(Actions.setModal({ show: false }));
+  return answer;
+}
+
 function* timeTick() {
   while (true) {
     yield delay(100);
@@ -24,22 +35,27 @@ function* updateBoard(updater) {
 
 function* pieceFall() {
   let piece = new Piece(3, 1, Math.floor(Math.random() * 7), 0);
-  console.log(piece);
-  yield* updateBoard(board => piece.setTo(board));
-
   let board = yield select((state => state.board));
+  if (!piece.canPut(board)) {
+    yield put(Actions.sysGameOver());
+    return;
+  }
+  board = piece.setTo(board);
+  yield put(Actions.setBoard(board));
+
   let tick = 0;
   let slackTime = false;
   let slackCounter = 0;
   while (true) {
     if (piece.reachedToBottom(board)) {
-      // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
       if (slackTime === false) {
+        // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
         slackTime = true;
         slackCounter = 10;
         console.log("  slack time!");
       }
       else if (slackCounter === 0) {
+        // 固定時間終了、このpieceは底に落下したことが確定。
         break;
       }
       else {
@@ -64,14 +80,14 @@ function* pieceFall() {
       tick++;
     }
     if (keyDown || tick % 10 === 0) {
+      // next piece position & spin (still candidate)
       const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
       if (nextPiece !== piece) {
-        console.log('board=',board, 'piece=',piece);
         let [newBoard, newPiece] = nextPiece.tryPutTo(board, piece);
         yield put(Actions.setBoard(newBoard));
         piece = newPiece;
       }
-      board = yield select((state => state.board));
+      board = yield select(state => state.board);
     }
   }
 }
@@ -82,10 +98,8 @@ function* game() {
   let timeTickTask;
   try {
     timeTickTask = yield fork(timeTick);
-    let board = yield select((state => state.board));
-    while (!Board.isGameOver(board)) {
+    while (yield select(state => state.gameRunning)) {
       yield* pieceFall();
-      board = yield select((state => state.board));
     }
   } finally {
     yield cancel(timeTickTask);
@@ -104,8 +118,15 @@ export default function* rootSaga() {
     yield put(Actions.sysGameStart());
     yield put(Actions.setGameRunning(true));
     yield fork(game);
-    yield take(Types.SYS_GAME_QUIT);
+    const gameResult = yield race({
+      quit: take(Types.SYS_GAME_QUIT),
+      over: take(Types.SYS_GAME_OVER),
+    });
     yield put(Actions.setGameRunning(false));
+    if (gameResult.over){
+      yield gameOver();
+    }
+    console.log(gameResult);
     yield call(() => Promise.resolve(Router.push('/')));
   }
 }
