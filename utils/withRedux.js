@@ -2,18 +2,19 @@ import { Component } from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
+import createLogger from 'redux-logger';
+import { DockableSagaView, createSagaMonitor } from 'redux-saga-devtools';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import rootSaga from '../sagas';
 import reducer from './reducer';
 import * as Board from '../game/board';
-import { DockableSagaView, createSagaMonitor } from 'redux-saga-devtools';
-import { composeWithDevTools } from 'redux-devtools-extension';
 
 const initStore = (reducer, isServer) => {
   // server side rendering or first time in browser
   if ((isServer && typeof window === 'undefined') || (typeof window !== 'undefined' && !window.store)) {
     const sagaMonitor = createSagaMonitor();
     const sagaMiddleware = createSagaMiddleware({sagaMonitor});
-    const middleWare = applyMiddleware(sagaMiddleware);
+    const middleWare = applyMiddleware(sagaMiddleware/*, createLogger()*/);
     const result = createStore(reducer,
                                composeWithDevTools(
                                  middleWare,

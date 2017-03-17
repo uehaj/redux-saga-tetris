@@ -1,5 +1,6 @@
 import * as Board from "../game/board.js";
 import { connect } from 'react-redux';
+import Modal from './Modal';
 
 const PlayField = (props) => {
   return (

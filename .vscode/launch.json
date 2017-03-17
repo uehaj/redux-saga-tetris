@@ -3,17 +3,11 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
-    {
-        "type": "node",
+    "configurations": [{
+        "type": "chrome",
         "request": "launch",
-        "name": "Launch via NPM",
-        "runtimeExecutable": "npm",
-        "runtimeArgs": [
-            "run-script",
-            "dev"
-        ],
-        "port": 5858
-    }
-    ]
+        "name": "Launch Chrome",
+        "url": "http://localhost:3000",
+        "webRoot": "${workspaceRoot}"
+    }]
 }
