@@ -1,20 +1,19 @@
-import Piece from "../game/Piece";
-import * as Board from "../game/Board";
+/* global describe, expect, it */
+import Piece from '../game/Piece';
+import * as Board from '../game/board';
 
 describe('Piece', () => {
-
   it('new', () => {
-    expect(new Piece(0,0,0,0).x).toBe(0);
-    expect(new Piece(0,0,0,0).y).toBe(0);
-    expect(new Piece(0,0,0,0).piece).toBe(0);
-    expect(new Piece(0,0,0,0).spin).toBe(0);
+    expect(new Piece(0, 0, 0, 0).x).toBe(0);
+    expect(new Piece(0, 0, 0, 0).y).toBe(0);
+    expect(new Piece(0, 0, 0, 0).piece).toBe(0);
+    expect(new Piece(0, 0, 0, 0).spin).toBe(0);
   });
 
-
   it('Piece.setTo()', () => {
-    let initialBoard = Board.INITIAL_BOARD;
+    const initialBoard = Board.INITIAL_BOARD;
     const W = Board.W;
-    expect(new Piece(1,1,0,0).setTo(initialBoard)).toEqual(
+    expect(new Piece(1, 1, 0, 0).setTo(initialBoard)).toEqual(
       [[W, W, W, W, W, W, W, W, W, W, W, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, W],
@@ -37,15 +36,15 @@ describe('Piece', () => {
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
-       [W, W, W, W, W, W, W, W, W, W, W, W]]
+       [W, W, W, W, W, W, W, W, W, W, W, W]],
     );
   });
 
-  it('Piece.tryPutTo() 1,19 success', () => {
-    let initialBoard = Board.INITIAL_BOARD;
+  it('Piece.tryPutTo() 1, 19 success', () => {
+    const initialBoard = Board.INITIAL_BOARD;
     const W = Board.W;
-    const oldPiece = new Piece(1,19,0,0);
-    const newPiece = new Piece(1,20,0,0);
+    const oldPiece = new Piece(1, 19, 0, 0);
+    const newPiece = new Piece(1, 20, 0, 0);
     const result = newPiece.tryPutTo(initialBoard, oldPiece);
     expect(result[0]).toEqual(
       [[W, W, W, W, W, W, W, W, W, W, W, W],
@@ -101,8 +100,8 @@ describe('Piece', () => {
       [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
       [W, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, W],
       [W, W, W, W, W, W, W, W, W, W, W, W]];
-    const oldPiece = new Piece(1,20,0,0);
-    const newPiece = new Piece(1,21,0,0);
+    const oldPiece = new Piece(1, 20, 0, 0);
+    const newPiece = new Piece(1, 21, 0, 0);
     const result = newPiece.tryPutTo(initialBoard, oldPiece);
     expect(result[0]).toEqual(initialBoard);
     expect(result[1]).toEqual(oldPiece);
@@ -110,9 +109,8 @@ describe('Piece', () => {
   });
 
   it('Piece.reachedToBottom() 1,1 is false', () => {
-    let initialBoard = Board.INITIAL_BOARD;
     const W = Board.W;
-    expect(new Piece(1,1,0,0).reachedToBottom(
+    expect(new Piece(1, 1, 0, 0).reachedToBottom(
       [[W, W, W, W, W, W, W, W, W, W, W, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, W],
@@ -135,14 +133,13 @@ describe('Piece', () => {
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
-       [W, W, W, W, W, W, W, W, W, W, W, W]]
+       [W, W, W, W, W, W, W, W, W, W, W, W]],
     )).toBe(false);
   });
 
   it('Piece.reachedToBottom() 1,19 is false', () => {
-    let initialBoard = Board.INITIAL_BOARD;
     const W = Board.W;
-    expect(new Piece(1,19,0,0).reachedToBottom(
+    expect(new Piece(1, 19, 0, 0).reachedToBottom(
       [[W, W, W, W, W, W, W, W, W, W, W, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
@@ -165,14 +162,13 @@ describe('Piece', () => {
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
-       [W, W, W, W, W, W, W, W, W, W, W, W]]
+       [W, W, W, W, W, W, W, W, W, W, W, W]],
     )).toBe(false);
   });
 
   it('Piece.reachedToBottom() 1,20 is true', () => {
-    let initialBoard = Board.INITIAL_BOARD;
     const W = Board.W;
-    expect(new Piece(1,20,0,0).reachedToBottom(
+    expect(new Piece(1, 20, 0, 0).reachedToBottom(
       [[W, W, W, W, W, W, W, W, W, W, W, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
@@ -195,8 +191,7 @@ describe('Piece', () => {
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, W],
        [W, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, W],
-       [W, W, W, W, W, W, W, W, W, W, W, W]]
+       [W, W, W, W, W, W, W, W, W, W, W, W]],
     )).toBe(true);
   });
 });
-

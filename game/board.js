@@ -1,13 +1,13 @@
-import * as Config from "./config";
+import * as Config from './config';
 
 export const W = 255;
 
 export const INITIAL_BOARD = [
-  Array(Config.WIDTH+2).fill(W),
+  Array(Config.WIDTH + 2).fill(W),
   ...Array(Config.HEIGHT).fill(
-    [W, ...Array(Config.WIDTH).fill(0), W]
+    [W, ...Array(Config.WIDTH).fill(0), W],
   ),
-  Array(Config.WIDTH+2).fill(W),
+  Array(Config.WIDTH + 2).fill(W),
 ];
 
 export function updateCell(board, x, y, cell) {
@@ -16,9 +16,9 @@ export function updateCell(board, x, y, cell) {
     [
       ...board[y].slice(0, x),
       cell,
-      ...board[y].slice(x+1, board[y].length),
+      ...board[y].slice(x + 1, board[y].length),
     ],
-    ...board.slice(y + 1, board.length)
+    ...board.slice(y + 1, board.length),
   ];
 }
 
