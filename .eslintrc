@@ -1,14 +1,17 @@
 {
-    "parserOptions": {
-        "sourceType": "module",
-    },
+  "parserOptions": {
+      "sourceType": "module",
+  },
   "extends": "airbnb",
   "env": {
     "browser": true
   },
   "rules": {
     "react/jsx-no-bind": 0,
-    "import/no-extraneous-dependencies": 0
+    "import/no-extraneous-dependencies": 0,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0,
   },
   "ecmaFeatures" : {
     "jsx": true

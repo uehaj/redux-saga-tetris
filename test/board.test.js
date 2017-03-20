@@ -1,9 +1,10 @@
-import * as Board from "../game/board";
+/* global describe, expect, it */
+import * as Board from '../game/board';
 
 describe('board', () => {
   it('size of INITIAL_BOARD', () => {
-    expect(Board.INITIAL_BOARD.length).toBe(23)
-    expect(Board.INITIAL_BOARD[0].length).toBe(12)
+    expect(Board.INITIAL_BOARD.length).toBe(23);
+    expect(Board.INITIAL_BOARD[0].length).toBe(12);
   });
 
   it('getCell() is wall', () => {
@@ -26,7 +27,4 @@ describe('board', () => {
     expect(Board.getCell(Board.updateCell(Board.INITIAL_BOARD, 2, 1, 77), 2, 1)).toBe(77);
     expect(Board.getCell(Board.updateCell(Board.INITIAL_BOARD, 10, 1, 77), 10, 1)).toBe(77);
   });
-
-
 });
-

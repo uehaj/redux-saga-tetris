@@ -1,4 +1,3 @@
-import React from 'react';
 import { connect } from 'react-redux';
 import withRedux from '../utils/withRedux';
 import KeyHandler from '../components/KeyHandler';
@@ -7,14 +6,13 @@ import * as Keys from '../game/keys';
 import PlayField from '../components/PlayField';
 
 /**
- * 
- * @param {*} props 
+ *
+ * @param {*} props
  */
-const Game = (props) => {
-  return (
-    <Layout modal={props.modal}>
-      <div>
-        <style jsx>{`
+const Game = props =>
+  <Layout>
+    <div>
+      <style jsx>{`
           .container {
             display: flex;
             flex-flow: row wrap;
@@ -27,24 +25,18 @@ const Game = (props) => {
             flex-grow: 3;
             padding: 1em;
           }
-        `}
-        </style>
-        <KeyHandler captureKeys={[...Keys.ALL]} />
-        <div className='container'>
-          <div className='info'>
-            SCORE 100
-          </div>
-          <div className='playfield'>
-           {props.board && <PlayField />}
-          </div>
-          {props.gameOver && <GameOver />}
+      `}
+      </style>
+      <KeyHandler captureKeys={[...Keys.ALL]} />
+      <div className="container">
+        <div className="info">
+          SCORE 100
+        </div>
+        <div className="playfield">
+          {props.board && <PlayField />}
         </div>
       </div>
-    </Layout>
-  );
-};
+    </div>
+  </Layout>;
 
-export default withRedux(connect(
-  state => state,
-  dispatch => ({dispatch})
-)(Game));
+export default withRedux(connect(state => state, dispatch => ({ dispatch }))(Game));

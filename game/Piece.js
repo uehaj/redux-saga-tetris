@@ -24,7 +24,8 @@ export default class Piece {
   }
 
   tryPutTo(board, oldPiece) {
-    const unsetBoard = pieceUtils.unSetPiece(board, oldPiece.x, oldPiece.y, oldPiece.piece, oldPiece.spin);
+    const unsetBoard
+          = pieceUtils.unSetPiece(board, oldPiece.x, oldPiece.y, oldPiece.piece, oldPiece.spin);
     if (this.canPut(unsetBoard)) {
       const newBoard = pieceUtils.setPiece(unsetBoard, this.x, this.y, this.piece, this.spin);
       return [newBoard, this];
@@ -34,25 +35,26 @@ export default class Piece {
 
   nextPiece(keyDownActionType) {
     switch (keyDownActionType) {
-    case Keys.KEY_ARROW_LEFT:
-      return new Piece(this.x-1, this.y, this.piece, this.spin);
-    case Keys.KEY_SPC:
-    case Keys.KEY_ARROW_DOWN:
-      return new Piece(this.x, this.y+1, this.piece, this.spin);
-    case Keys.KEY_ARROW_RIGHT:
-      return new Piece(this.x+1, this.y, this.piece, this.spin);
-    case Keys.KEY_Z:
-      return new Piece(this.x, this.y, this.piece, this.spin-1);
-    case Keys.KEY_X:
-      return new Piece(this.x, this.y, this.piece, this.spin+1);
-    default:
-      break;
+      case Keys.KEY_ARROW_LEFT:
+        return new Piece(this.x - 1, this.y, this.piece, this.spin);
+      case Keys.KEY_SPC:
+      case Keys.KEY_ARROW_DOWN:
+        return new Piece(this.x, this.y + 1, this.piece, this.spin);
+      case Keys.KEY_ARROW_RIGHT:
+        return new Piece(this.x + 1, this.y, this.piece, this.spin);
+      case Keys.KEY_Z:
+        return new Piece(this.x, this.y, this.piece, this.spin - 1);
+      case Keys.KEY_X:
+        return new Piece(this.x, this.y, this.piece, this.spin + 1);
+      default:
+        break;
     }
     return this;
   }
 
   reachedToBottom(board) {
-    let [newBoard, piece] = new Piece(this.x, this.y+1, this.piece, this.spin).tryPutTo(board, this);
+    // eslint-disable-next-line no-unused-vars
+    const [_, piece] = new Piece(this.x, this.y + 1, this.piece, this.spin).tryPutTo(board, this);
     return piece === this;
   }
 }

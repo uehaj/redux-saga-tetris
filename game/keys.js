@@ -32,12 +32,19 @@ export const KEY_ARROW_RIGHT = 39;
 export const KEY_ARROW_DOWN = 40;
 
 export const ARROW = [KEY_ARROW_DOWN, KEY_ARROW_LEFT, KEY_ARROW_UP, KEY_ARROW_RIGHT];
-export const A_Z = [65,66,67,68,69,
-                    70,71,72,73,74,75,76,77,78,79,
-                    80,81,82,83,84,85,86,88,88,89,
-                    90];
+
+export const A_Z = [
+  65, 66, 67, 68, 69,
+  70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+  80, 81, 82, 83, 84, 85, 86, 88, 88, 89,
+  90,
+];
+
 export const HJKL = [KEY_H, KEY_J, KEY_K, KEY_L];
-export const ALL = [...A_Z,
-                    ...ARROW,
-                    KEY_ESC,
-                    KEY_SPC];
+
+export const ALL = [
+  ...A_Z,
+  ...ARROW,
+  KEY_ESC,
+  KEY_SPC,
+];

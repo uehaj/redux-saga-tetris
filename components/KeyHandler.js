@@ -9,12 +9,6 @@ class KeyHandler extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  handleKeyDown(event) {
-    if (this.props.captureKeys.includes(event.keyCode)) {
-      this.props.dispatch(Actions.uiKeyDown(event.keyCode));
-    }
-  }
-
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
@@ -23,9 +17,15 @@ class KeyHandler extends Component {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
+  handleKeyDown(event) {
+    if (this.props.captureKeys.includes(event.keyCode)) {
+      this.props.dispatch(Actions.uiKeyDown(event.keyCode));
+    }
+  }
+
   render() {
     return (<div />);
   }
 }
 
-export default connect(state => state, dispatch => { return {dispatch}; })(KeyHandler);
+export default connect(state => state, dispatch => ({ dispatch }))(KeyHandler);
