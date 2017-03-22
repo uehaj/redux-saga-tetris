@@ -22,9 +22,31 @@ function* gameOver() {
 }
 
 function* timeTickGenerator() {
+  let tick = 0;
   while (true) {
     yield delay(100);
-    yield put(Actions.sysTimeTick());
+    yield put(Actions.sysTimeTick(tick));
+    tick += 1;
+  }
+}
+
+// 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
+function* slackTimeChecker() {
+  let tick = 10;
+  while (true) {
+    const { keyDown, timeTick } = yield race({
+      keyDown: take(Types.UI_KEY_DOWN),
+      timeTick: take(Types.SYS_TIME_TICK),
+    });
+    if (tick === 0 || (keyDown && keyDown.payload === Keys.KEY_ARROW_DOWN)) {
+      // 固定時間時間中に下を押したとき、もしくは
+      // 固定時間終了時には、このpieceは底に落下したことが確定。
+      yield put(Actions.sysFixDownPiece());
+      return;
+    }
+    if (timeTick) {
+      tick -= 1;
+    }
   }
 }
 
@@ -32,46 +54,31 @@ function* pieceFall() {
   let piece = new Piece(3, 1, Math.floor(Math.random() * 7), 0);
   let board = yield select((state => state.board));
   if (!piece.canPut(board)) {
+    // トップ位置に置けなければゲームオーバー
     yield put(Actions.sysGameOver());
     return;
   }
   board = piece.setTo(board);
   yield put(Actions.setBoard(board));
 
-  let tick = 0;
-  let slackTime = false;
-  let slackCounter = 0;
+  let stcTask = null;
   while (true) {
-    const { keyDown, timeTick } = yield race({
+    const { keyDown, fixDown, timeTick } = yield race({
       keyDown: take(Types.UI_KEY_DOWN),
+      fixDown: take(Types.SYS_FIX_DOWN_PIECE),
       timeTick: take(Types.SYS_TIME_TICK),
     });
-    if (piece.reachedToBottom(board)) {
-      if (slackTime === false) {
-        // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
-        slackTime = true;
-        slackCounter = 10;
-      } else if (slackCounter === 0) {
-        // 固定時間終了、このpieceは底に落下したことが確定。
-        break;
-      } else {
-        slackCounter -= 1;
-        if (keyDown && keyDown.payload === Keys.KEY_ARROW_DOWN) {
-          // 固定時間時間中に下を押したときは固定時間を解除。
-          slackCounter = 0;
-        }
-      }
-    } else {
-      slackTime = false;
+    if (fixDown) { // this piece is fall to bottom, and fixed
+      break;
+    }
+    if (stcTask === null && piece.reachedToBottom(board)) {
+      stcTask = yield fork(slackTimeChecker);
     }
     if (keyDown && keyDown.payload === Keys.KEY_Q) {
       yield put(Actions.sysGameQuit());
     }
-    if (timeTick) {
-      tick += 1;
-    }
-    if (keyDown || tick % 10 === 0) {
-      // next piece position & spin (still candidate)
+    if (keyDown || (timeTick && timeTick.payload % 10 === 0)) {
+      // calcurate next piece position & spin
       const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
       if (nextPiece !== piece) {
         const [newBoard, newPiece] = nextPiece.tryPutTo(board, piece);
