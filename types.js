@@ -16,5 +16,6 @@ export const SYS_FIX_DOWN_PIECE = 'SYS_FIX_DOWN_PIECE';
 
 export const UPDATE_CELL = 'UPDATE_CELL';
 export const SET_BOARD = 'SET_BOARD';
+export const SET_CURRENT_PIECE = 'SET_CURRENT_PIECE';
 export const SET_GAME_RUNNING = 'SET_GAME_RUNNING';
 export const SET_MODAL = 'SET_MODAL';

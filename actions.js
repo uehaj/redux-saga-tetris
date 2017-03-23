@@ -15,5 +15,6 @@ export const sysFixDownPiece = createAction(Types.SYS_FIX_DOWN_PIECE);
 
 export const updateCell = createAction(Types.UPDATE_CELL);
 export const setBoard = createAction(Types.SET_BOARD);
+export const setCurrentPiece = createAction(Types.SET_CURRENT_PIECE);
 export const setGameRunning = createAction(Types.SET_GAME_RUNNING);
 export const setModal = createAction(Types.SET_MODAL);
