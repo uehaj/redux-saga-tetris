@@ -24,6 +24,11 @@ export default(state = initialState, action) => {
         ...state,
         board: action.payload,
       };
+    case Types.SET_CURRENT_PIECE:
+      return {
+        ...state,
+        currentPiece: action.payload,
+      };
     case Types.SET_GAME_RUNNING:
       return {
         ...state,
