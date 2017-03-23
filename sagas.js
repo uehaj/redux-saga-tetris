@@ -68,7 +68,7 @@ function* pieceFall() {
       fixDown: take(Types.SYS_FIX_DOWN_PIECE),
       timeTick: take(Types.SYS_TIME_TICK),
     });
-    if (fixDown) { // this piece is fall to bottom, and fixed
+    if (fixDown) { // this piece is fall to bottom or other piece, and fixed
       break;
     }
     if (stcTask === null && piece.reachedToBottom(board)) {
@@ -113,15 +113,18 @@ export default function* rootSaga() {
     while ((yield take(Types.UI_KEY_DOWN)).payload !== Keys.KEY_S) {
       /* do nothinng */
     }
+    // ゲーム開始
     yield put(Actions.sysGameStart());
     yield put(Actions.setGameRunning(true));
     yield fork(game);
+    // ゲームオーバー、もしくはQで終了
     const gameResult = yield race({
       quit: take(Types.SYS_GAME_QUIT),
       over: take(Types.SYS_GAME_OVER),
     });
     yield put(Actions.setGameRunning(false));
     if (gameResult.over) {
+      // ゲームオーバー画面(確認ダイアログ)表示
       yield* gameOver();
     }
     yield call(() => Promise.resolve(Router.push('/')));
