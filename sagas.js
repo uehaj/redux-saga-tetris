@@ -10,6 +10,9 @@ import * as Keys from './game/keys';
 import * as Board from './game/board';
 import Piece from './game/Piece';
 
+const TICK = 100; // 100ms
+const SLACK_TIME = 5; // 500ms
+
 // show modal dialog and get user response(Ok/Cancel) synchronously
 function* gameOver() {
   yield put(Actions.setModal({ show: true, title: 'GAME OVER' }));
@@ -24,7 +27,7 @@ function* gameOver() {
 function* timeTickGenerator() {
   let tick = 0;
   while (true) {
-    yield delay(100);
+    yield delay(TICK);
     yield put(Actions.sysTimeTick(tick));
     tick += 1;
   }
@@ -32,22 +35,44 @@ function* timeTickGenerator() {
 
 // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
 function* slackTimeChecker() {
-  let tick = 10;
+  let slackTime = SLACK_TIME;
   while (true) {
     const { keyDown, timeTick } = yield race({
       keyDown: take(Types.UI_KEY_DOWN),
       timeTick: take(Types.SYS_TIME_TICK),
     });
-    if (tick === 0 || (keyDown && keyDown.payload === Keys.KEY_ARROW_DOWN)) {
+    if (slackTime === 0 || (keyDown && keyDown.payload === Keys.KEY_ARROW_DOWN)) {
       // 固定時間中に↓を押したとき、もしくは
       // 固定時間終了時には、このpieceは底に落下したことが確定。
       yield put(Actions.sysFixDownPiece());
       return;
     }
     if (timeTick) {
-      tick -= 1;
+      slackTime -= 1;
     }
   }
+}
+
+function clearLines(board) {
+  let count = 0;
+  const result0 = board
+    .slice(1, -1)
+    .reverse()
+    .reduce(
+      (prev, curr) => {
+        if (curr.slice(1, -1).every(elem => elem !== 0)) {
+          count += 1;
+          return prev;
+        }
+        return prev.concat([curr]);
+      },
+      [])
+    .concat(Array(count).fill([Board.W, ...Array(Config.WIDTH).fill(0), Board.W]))
+    .reverse()
+  ;
+  return [Array(Config.WIDTH + 2).fill(Board.W)]
+    .concat(result0)
+    .concat([Array(Config.WIDTH + 2).fill(Board.W)]);
 }
 
 function* pieceFall() {
@@ -69,7 +94,7 @@ function* pieceFall() {
     });
     if (fixDown) { // this piece is fall to bottom or other piece, and fixed
       board = piece.setTo(board);
-      yield put(Actions.setBoard(board));
+      yield put(Actions.setBoard(clearLines(board)));
       break;
     }
     if (piece.reachedToBottom(board)) {

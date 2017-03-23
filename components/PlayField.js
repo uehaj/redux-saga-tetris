@@ -58,7 +58,7 @@ const PlayField = (props) => {
       `}
       </style>
       {
-        board.slice(2).map((row, y) => (
+        board && board.slice(1).map((row, y) => (
           <div className="board" key={`${y}`} >
             {
               row.map((cell, x) => {
