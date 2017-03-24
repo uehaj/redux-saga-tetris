@@ -14,27 +14,23 @@ const TICK = 100; // 100ms
 const SLACK_TIME = 5; // 500ms
 
 // show modal dialog and get user response(Ok/Cancel) synchronously
-function* gameOver() {
+export function* gameOver() {
   yield put(Actions.setModal({ show: true, title: 'GAME OVER' }));
-  const answer = yield race({
-    ok: take(Types.UI_MODAL_OK),
-    cancel: take(Types.UI_MODAL_CANCEL),
-  });
+  yield take(Types.UI_MODAL_OK);
   yield put(Actions.setModal({ show: false }));
-  return answer;
 }
 
-function* timeTickGenerator() {
+export function* timeTickGenerator() {
   let tick = 0;
   while (true) {
-    yield delay(TICK);
+    yield call(delay, TICK);
     yield put(Actions.sysTimeTick(tick));
     tick += 1;
   }
 }
 
 // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
-function* slackTimeChecker() {
+export function* slackTimeChecker() {
   let slackTime = SLACK_TIME;
   while (true) {
     const { keyDown, timeTick } = yield race({
@@ -53,29 +49,7 @@ function* slackTimeChecker() {
   }
 }
 
-function clearLines(board) {
-  let count = 0;
-  const result0 = board
-    .slice(1, -1)
-    .reverse()
-    .reduce(
-      (prev, curr) => {
-        if (curr.slice(1, -1).every(elem => elem !== 0)) {
-          count += 1;
-          return prev;
-        }
-        return prev.concat([curr]);
-      },
-      [])
-    .concat(Array(count).fill([Board.W, ...Array(Config.WIDTH).fill(0), Board.W]))
-    .reverse()
-  ;
-  return [Array(Config.WIDTH + 2).fill(Board.W)]
-    .concat(result0)
-    .concat([Array(Config.WIDTH + 2).fill(Board.W)]);
-}
-
-function* pieceFall() {
+export function* pieceFall() {
   let piece = new Piece(3, 1, Math.floor(Math.random() * 7), 0);
   let board = yield select((state => state.board));
   if (!piece.canPut(board)) {
@@ -94,9 +68,10 @@ function* pieceFall() {
     });
     if (fixDown) { // this piece is fall to bottom or other piece, and fixed
       board = piece.setTo(board);
-      yield put(Actions.setBoard(clearLines(board)));
+      yield put(Actions.setBoard(Board.clearLines(board)));
       break;
     }
+    // 固定時間処理タスクを起動
     if (piece.reachedToBottom(board)) {
       if (stcTask === null) {
         stcTask = yield fork(slackTimeChecker);
@@ -120,7 +95,7 @@ function* pieceFall() {
   }
 }
 
-function* game() {
+export function* game() {
   yield call(() => Promise.resolve(Router.push('/game')));
   yield put(Actions.setBoard(Board.INITIAL_BOARD));
   let timeTickGeneratorTask;
