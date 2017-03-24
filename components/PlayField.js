@@ -75,6 +75,6 @@ const PlayField = (props) => {
       }
     </div>
   );
-}
+};
 
 export default connect(state => state, dispatch => ({ dispatch }))(PlayField);
