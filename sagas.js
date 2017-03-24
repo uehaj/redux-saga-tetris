@@ -119,7 +119,6 @@ export default function* rootSaga() {
       /* do nothinng */
     }
     // ゲーム開始
-    yield put(Actions.sysGameStart());
     yield put(Actions.setGameRunning(true));
     yield fork(game);
     // ゲームオーバー、もしくはQで終了

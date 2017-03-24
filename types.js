@@ -8,7 +8,6 @@ export const UI_MODAL_OPEN = 'UI_MODAL_OPEN';
 export const UI_MODAL_OK = 'UI_MODAL_OK';
 export const UI_MODAL_CANCEL = 'UI_MODAL_CANCEL';
 
-export const SYS_GAME_START = 'SYS_GAME_START';
 export const SYS_TIME_TICK = 'SYS_TIME_TICK';
 export const SYS_GAME_QUIT = 'SYS_GAME_QUIT';
 export const SYS_GAME_OVER = 'SYS_GAME_OVER';
