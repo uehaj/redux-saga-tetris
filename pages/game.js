@@ -18,11 +18,11 @@ const Game = props =>
             flex-flow: row wrap;
           }
           .info {
-            flex-grow: 1;
+            flex: 1;
             padding: 1em;
           }
           .playfield {
-            flex-grow: 3;
+            flex: 3;
             padding: 1em;
           }
       `}
@@ -30,7 +30,8 @@ const Game = props =>
       <KeyHandler captureKeys={[...Keys.ALL]} />
       <div className="container">
         <div className="info">
-          SCORE 100
+          SCORE {props.score}
+          HIGHSCORE {props.highScore}
         </div>
         <div className="playfield">
           {props.board && <PlayField />}
