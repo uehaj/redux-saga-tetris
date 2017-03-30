@@ -47,8 +47,11 @@ export function clearLines(board) {
     .concat(Array(count).fill([W, ...Array(Config.WIDTH).fill(0), W]))
     .reverse()
   ;
-  return [Array(Config.WIDTH + 2).fill(W)]
-    .concat(result0)
-    .concat([Array(Config.WIDTH + 2).fill(W)]);
+  console.log('clearLines: count=', count);
+  return [
+    [Array(Config.WIDTH + 2).fill(W)]
+      .concat(result0)
+      .concat([Array(Config.WIDTH + 2).fill(W)]),
+    count,
+  ];
 }
-

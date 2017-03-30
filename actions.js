@@ -10,10 +10,14 @@ export const uiModalCancel = createAction(Types.UI_MODAL_CANCEL);
 export const sysTimeTick = createAction(Types.SYS_TIME_TICK);
 export const sysGameQuit = createAction(Types.SYS_GAME_QUIT);
 export const sysGameOver = createAction(Types.SYS_GAME_OVER);
+export const sysGamePause = createAction(Types.SYS_GAME_PAUSE);
 export const sysFixDownPiece = createAction(Types.SYS_FIX_DOWN_PIECE);
 
 export const updateCell = createAction(Types.UPDATE_CELL);
 export const setBoard = createAction(Types.SET_BOARD);
 export const setCurrentPiece = createAction(Types.SET_CURRENT_PIECE);
 export const setGameRunning = createAction(Types.SET_GAME_RUNNING);
+export const setGamePausing = createAction(Types.SET_GAME_PAUSING);
 export const setModal = createAction(Types.SET_MODAL);
+export const setScore = createAction(Types.SET_SCORE);
+export const addScore = createAction(Types.ADD_SCORE);

@@ -1,4 +1,3 @@
-// import { DockableSagaView } from 'redux-saga-devtools';
 import { connect } from 'react-redux';
 import withRedux from '../utils/withRedux';
 import Layout from '../components/Layout';
@@ -17,12 +16,15 @@ const Index = props =>
         flex-grow: 1;
         padding: 1em;
       }
+      .h1 {
+        size: 72pt;
+      }
     `}
     </style>
     <div className="continer">
       <KeyHandler captureKeys={Keys.ALL} />
       <div className="content">
-        <h1>TETRIS</h1>
+        <h1>SAGARIS</h1>
       </div>
       <div className="content">
         (S) to start

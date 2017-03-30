@@ -6,6 +6,8 @@ const initialState = {
   modal: {
     show: false,
   },
+  score: 0,
+  highScore: 0
 };
 
 export default(state = initialState, action) => {
@@ -38,6 +40,18 @@ export default(state = initialState, action) => {
       return {
         ...state,
         modal: action.payload,
+      };
+    case Types.SET_SCORE:
+      return {
+        ...state,
+        score: action.payload,
+        highScore: Math.max(action.payload, state.highScore),
+      };
+    case Types.ADD_SCORE:
+      return {
+        ...state,
+        score: state.score + action.payload,
+        highScore: Math.max(state.score + action.payload, state.highScore),
       };
     default:
       return state;

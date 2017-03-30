@@ -62,7 +62,10 @@ export default props =>
     </style>
     <div className="modal">
       <div className="modal-window">
-        <div className="close" onClick={props.onCancel}>&times;</div>
+        {
+          props.onCancel &&
+            <div className="close" onClick={props.onCancel}>&times;</div>
+        }
         <h3>{props.title}</h3>
         <hr />
         {props.children}
