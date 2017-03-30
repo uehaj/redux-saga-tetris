@@ -13,11 +13,34 @@ import Piece from './game/Piece';
 const TICK = 100; // 100ms
 const SLACK_TIME = 5; // 500ms
 
-// show modal dialog and get user response(Ok/Cancel) synchronously
+// show modal dialog synchronously
 export function* gameOver() {
   yield put(Actions.setModal({ show: true, title: 'GAME OVER' }));
   yield take(Types.UI_MODAL_OK);
   yield put(Actions.setModal({ show: false }));
+}
+
+// show modal dialog and get user response(Ok/Cancel) synchronously
+export function* gameQuit() {
+  yield put(Actions.setModal({ show: true, title: 'QUIT THE GAME?' }));
+  const answer = yield race({
+    ok: take(Types.UI_MODAL_OK),
+    cancel: take(Types.UI_MODAL_CANCEL),
+  });
+  yield put(Actions.setModal({ show: false }));
+  if (answer.ok) {
+    yield put(Actions.sysGameQuit());
+  }
+}
+
+// pause when 'P' key down
+export function* pauseChecker() {
+  while (true) {
+    yield take(Types.SYS_GAME_PAUSE);
+    yield put(Actions.setModal({ show: true, title: 'PAUSE' }));
+    yield take(Types.UI_MODAL_OK);
+    yield put(Actions.setModal({ show: false }));
+  }
 }
 
 export function* timeTickGenerator() {
@@ -68,7 +91,11 @@ export function* pieceFall() {
     });
     if (fixDown) { // this piece is fall to bottom or other piece, and fixed
       board = piece.setTo(board);
-      yield put(Actions.setBoard(Board.clearLines(board)));
+      const [newBoard, clearedLines] = Board.clearLines(board);
+      board = newBoard;
+      yield put(Actions.setBoard(board));
+      // line clear bonus
+      yield put(Actions.addScore(Config.LINES_SCORE[clearedLines]));
       break;
     }
     // 固定時間処理タスクを起動
@@ -81,13 +108,21 @@ export function* pieceFall() {
       yield cancel(stcTask);
       stcTask = null;
     }
-    if (keyDown && keyDown.payload === Keys.KEY_Q) {
-      yield put(Actions.sysGameQuit());
+    if (keyDown) {
+      if (keyDown.payload === Keys.KEY_Q) {
+        yield* gameQuit();
+      } else if (keyDown.payload === Keys.KEY_P) {
+        yield put(Actions.sysGamePause());
+      }
     }
     if (keyDown || (timeTick && timeTick.payload % 10 === 0)) {
       // calcurate next piece position & spin
       const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
       if (nextPiece.canPut(board)) {
+        if (/*nextPiece !== piece && */keyDown && keyDown.payload ===
+            Keys.KEY_ARROW_DOWN) {
+          yield put(Actions.addScore(1));
+        }
         piece = nextPiece;
         yield put(Actions.setCurrentPiece(piece));
       }
@@ -98,20 +133,24 @@ export function* pieceFall() {
 export function* game() {
   yield call(() => Promise.resolve(Router.push('/game')));
   yield put(Actions.setBoard(Board.INITIAL_BOARD));
+  yield put(Actions.setScore(0));
   let timeTickGeneratorTask;
+  let pauseCheckerTask;
   try {
     timeTickGeneratorTask = yield fork(timeTickGenerator);
+    pauseCheckerTask = yield fork(pauseChecker);
     while (yield select(state => state.gameRunning)) {
       yield* pieceFall();
     }
   } finally {
     yield cancel(timeTickGeneratorTask);
+    yield cancel(pauseCheckerTask);
   }
 }
 
 export default function* rootSaga() {
   if (Config.PREDICTABLE_RANDOM) {
-    Math.seedrandom('tetris');
+    Math.seedrandom('sagaris');
   }
   yield call(() => Promise.resolve(Router.push('/')));
   while (true) {
@@ -121,10 +160,10 @@ export default function* rootSaga() {
     // ゲーム開始
     yield put(Actions.setGameRunning(true));
     yield fork(game);
-    // ゲームオーバー、もしくはQで終了
+    // ゲームオーバー、もしくはQ押下で終了
     const gameResult = yield race({
-      quit: take(Types.SYS_GAME_QUIT),
       over: take(Types.SYS_GAME_OVER),
+      quit: take(Types.SYS_GAME_QUIT),
     });
     yield put(Actions.setGameRunning(false));
     if (gameResult.over) {

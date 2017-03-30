@@ -11,6 +11,7 @@ const Layout = (props) => {
         modal.show &&
           <Modal
             onOk={() => dispatch(Actions.uiModalOk())}
+            onCancel={() => dispatch(Actions.uiModalCancel())}
             title={modal.title}
           >
             {modal.content}
