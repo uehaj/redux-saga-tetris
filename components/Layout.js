@@ -5,13 +5,21 @@ import * as Actions from '../actions';
 
 const Layout = (props) => {
   const { dispatch, modal } = props;
+
+  let { okButtonText, cancelButtonText } = modal;
+  const onOk = okButtonText ? null : () => dispatch(Actions.uiModalOk());
+  const onCancel = cancelButtonText ? null : () => dispatch(Actions.uiModalCancel());
+  okButtonText = okButtonText || 'OK';
+  cancelButtonText = cancelButtonText || 'Cancel';
+
+  const modalProps = { okButtonText, cancelButtonText, onOk, onCancel };
+
   return (
     <div>
       {
         modal.show &&
           <Modal
-            onOk={() => dispatch(Actions.uiModalOk())}
-            onCancel={() => dispatch(Actions.uiModalCancel())}
+            {...modalProps}
             title={modal.title}
           >
             {modal.content}

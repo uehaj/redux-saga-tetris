@@ -24,6 +24,7 @@ export const KEY_W = 87;
 export const KEY_X = 88;
 export const KEY_Y = 89;
 export const KEY_Z = 90;
+export const KEY_ENTER = 13;
 export const KEY_ESC = 27;
 export const KEY_SPC = 32;
 export const KEY_ARROW_LEFT = 37;
@@ -45,6 +46,7 @@ export const HJKL = [KEY_H, KEY_J, KEY_K, KEY_L];
 export const ALL = [
   ...A_Z,
   ...ARROW,
+  KEY_ENTER,
   KEY_ESC,
   KEY_SPC,
 ];
