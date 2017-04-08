@@ -14,21 +14,30 @@ const TICK = 100; // 100ms
 const SLACK_TIME = 5; // 500ms
 
 // show modal dialog synchronously
-export function* gameOver() {
-  yield put(Actions.setModal({ show: true, title: 'GAME OVER' }));
-  yield take(Types.UI_MODAL_OK);
+export function* showModal({ title, cancelable = false }) {
+  yield put(Actions.setModal({ show: true, title, cancelable }));
+  let answer;
+  do {
+    answer = yield race({
+      ok: take(Types.UI_MODAL_OK),
+      cancel: take(Types.UI_MODAL_CANCEL),
+      keyDown: take(Types.UI_KEY_DOWN),
+    });
+  } while (!answer.ok
+           && !answer.cancel
+           && !(answer.keyDown && answer.keyDown.payload === Keys.KEY_ENTER)
+           && !(cancelable && answer.keyDown && answer.keyDown.payload === Keys.KEY_ESC));
   yield put(Actions.setModal({ show: false }));
+  return answer;
 }
 
-// show modal dialog and get user response(Ok/Cancel) synchronously
+export function* gameOver() {
+  yield* showModal({ title: 'GAME OVER' });
+}
+
 export function* gameQuit() {
-  yield put(Actions.setModal({ show: true, title: 'QUIT THE GAME?' }));
-  const answer = yield race({
-    ok: take(Types.UI_MODAL_OK),
-    cancel: take(Types.UI_MODAL_CANCEL),
-  });
-  yield put(Actions.setModal({ show: false }));
-  if (answer.ok) {
+  const answer = yield* showModal({ title: 'QUIT THE GAME?', cancelable: true });
+  if (answer.ok || answer.keyDown.payload === Keys.KEY_ENTER) {
     yield put(Actions.sysGameQuit());
   }
 }
@@ -37,9 +46,10 @@ export function* gameQuit() {
 export function* pauseChecker() {
   while (true) {
     yield take(Types.SYS_GAME_PAUSE);
-    yield put(Actions.setModal({ show: true, title: 'PAUSE' }));
-    yield take(Types.UI_MODAL_OK);
-    yield put(Actions.setModal({ show: false }));
+    yield* showModal({ title: 'PAUSE' });
+//    yield put(Actions.setModal({ show: true, title: 'PAUSE' }));
+//    yield take(Types.UI_MODAL_OK);
+//    yield put(Actions.setModal({ show: false }));
   }
 }
 
@@ -119,7 +129,7 @@ export function* pieceFall() {
       // calcurate next piece position & spin
       const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
       if (nextPiece.canPut(board)) {
-        if (/*nextPiece !== piece && */keyDown && keyDown.payload ===
+        if (nextPiece !== piece && keyDown && keyDown.payload ===
             Keys.KEY_ARROW_DOWN) {
           yield put(Actions.addScore(1));
         }

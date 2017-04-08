@@ -18,7 +18,9 @@ class KeyHandler extends Component {
   }
 
   handleKeyDown(event) {
+    console.log('KeyHandler.handleKeyDown');
     if (this.props.captureKeys.includes(event.keyCode)) {
+      console.log('KeyHandler.handleKeyDown includes');
       this.props.dispatch(Actions.uiKeyDown(event.keyCode));
     }
   }
