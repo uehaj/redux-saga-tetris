@@ -46,9 +46,6 @@ const Game = props =>
           <div className="info-item">
             SCORE {props.score}
           </div>
-          <div className="info-item">
-            HIGHSCORE {props.highScore}
-          </div>
         </div>
         <div className="playfield">
           {props.board && <PlayField />}

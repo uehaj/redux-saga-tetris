@@ -27,6 +27,9 @@ const Index = props =>
         <h1>SAGARIS</h1>
       </div>
       <div className="content">
+        HIGHSCORE {props.highScore}
+      </div>
+      <div className="content">
         (S) to start
       </div>
     </div>

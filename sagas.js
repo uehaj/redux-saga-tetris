@@ -26,7 +26,7 @@ export function* showModal({ title, cancelable = false }) {
   } while (!answer.ok
            && !answer.cancel
            && !(answer.keyDown && answer.keyDown.payload === Keys.KEY_ENTER)
-           && !(cancelable && answer.keyDown && answer.keyDown.payload === Keys.KEY_ESC));
+           && !(answer.keyDown && answer.keyDown.payload === Keys.KEY_ESC));
   yield put(Actions.setModal({ show: false }));
   return answer;
 }
@@ -42,15 +42,8 @@ export function* gameQuit() {
   }
 }
 
-// pause when 'P' key down
-export function* pauseChecker() {
-  while (true) {
-    yield take(Types.SYS_GAME_PAUSE);
-    yield* showModal({ title: 'PAUSE' });
-//    yield put(Actions.setModal({ show: true, title: 'PAUSE' }));
-//    yield take(Types.UI_MODAL_OK);
-//    yield put(Actions.setModal({ show: false }));
-  }
+export function* gamePause() {
+  yield* showModal({ title: 'PAUSE' });
 }
 
 export function* timeTickGenerator() {
@@ -122,7 +115,7 @@ export function* pieceFall() {
       if (keyDown.payload === Keys.KEY_Q) {
         yield* gameQuit();
       } else if (keyDown.payload === Keys.KEY_P) {
-        yield put(Actions.sysGamePause());
+        yield* gamePause();
       }
     }
     if (keyDown || (timeTick && timeTick.payload % 10 === 0)) {
@@ -145,16 +138,13 @@ export function* game() {
   yield put(Actions.setBoard(Board.INITIAL_BOARD));
   yield put(Actions.setScore(0));
   let timeTickGeneratorTask;
-  let pauseCheckerTask;
   try {
     timeTickGeneratorTask = yield fork(timeTickGenerator);
-    pauseCheckerTask = yield fork(pauseChecker);
     while (yield select(state => state.gameRunning)) {
       yield* pieceFall();
     }
   } finally {
     yield cancel(timeTickGeneratorTask);
-    yield cancel(pauseCheckerTask);
   }
 }
 
