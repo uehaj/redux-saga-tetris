@@ -10,7 +10,6 @@ export const uiModalCancel = createAction(Types.UI_MODAL_CANCEL);
 export const sysTimeTick = createAction(Types.SYS_TIME_TICK);
 export const sysGameQuit = createAction(Types.SYS_GAME_QUIT);
 export const sysGameOver = createAction(Types.SYS_GAME_OVER);
-export const sysGamePause = createAction(Types.SYS_GAME_PAUSE);
 export const sysFixDownPiece = createAction(Types.SYS_FIX_DOWN_PIECE);
 
 export const updateCell = createAction(Types.UPDATE_CELL);

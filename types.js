@@ -11,7 +11,6 @@ export const UI_MODAL_CANCEL = 'UI_MODAL_CANCEL';
 export const SYS_TIME_TICK = 'SYS_TIME_TICK';
 export const SYS_GAME_QUIT = 'SYS_GAME_QUIT';
 export const SYS_GAME_OVER = 'SYS_GAME_OVER';
-export const SYS_GAME_PAUSE = 'SYS_GAME_PAUSE';
 export const SYS_FIX_DOWN_PIECE = 'SYS_FIX_DOWN_PIECE';
 
 export const UPDATE_CELL = 'UPDATE_CELL';
