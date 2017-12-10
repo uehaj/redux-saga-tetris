@@ -78,4 +78,7 @@ const PlayField = props => {
   );
 };
 
-export default connect(state => state, dispatch => ({ dispatch }))(PlayField);
+export default connect(state => ({
+  currentPiece: state.main.currentPiece,
+  board: state.main.board,
+}))(PlayField);

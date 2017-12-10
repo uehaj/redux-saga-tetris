@@ -5,7 +5,7 @@ import KeyHandler from '../components/KeyHandler';
 import * as Keys from '../game/keys';
 
 // eslint-disable-next-line no-unused-vars
-const Index = props => (
+const Top = props => (
   <Layout>
     <style jsx="true">
       {`
@@ -33,4 +33,4 @@ const Index = props => (
   </Layout>
 );
 
-export default connect(state => state)(Index);
+export default connect(state => ({ highStore: state.main.highScore }))(Top);
