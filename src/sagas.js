@@ -1,6 +1,14 @@
 /* eslint no-constant-condition: ["error", { "checkLoops": false }] */
 import { delay } from 'redux-saga';
-import { race, take, put, call, fork, select, cancel } from 'redux-saga/effects';
+import {
+  race,
+  take,
+  put,
+  call,
+  fork,
+  select,
+  cancel,
+} from 'redux-saga/effects';
 import Router from 'next/router';
 import 'seedrandom';
 import * as Config from './game/config';
@@ -23,10 +31,12 @@ export function* showModal({ title, cancelable = false }) {
       cancel: take(Types.UI_MODAL_CANCEL),
       keyDown: take(Types.UI_KEY_DOWN),
     });
-  } while (!answer.ok
-           && !answer.cancel
-           && !(answer.keyDown && answer.keyDown.payload === Keys.KEY_ENTER)
-           && !(answer.keyDown && answer.keyDown.payload === Keys.KEY_ESC));
+  } while (
+    !answer.ok &&
+    !answer.cancel &&
+    !(answer.keyDown && answer.keyDown.payload === Keys.KEY_ENTER) &&
+    !(answer.keyDown && answer.keyDown.payload === Keys.KEY_ESC)
+  );
   yield put(Actions.setModal({ show: false }));
   return answer;
 }
@@ -36,7 +46,10 @@ export function* gameOver() {
 }
 
 export function* gameQuit() {
-  const answer = yield* showModal({ title: 'QUIT THE GAME?', cancelable: true });
+  const answer = yield* showModal({
+    title: 'QUIT THE GAME?',
+    cancelable: true,
+  });
   if (answer.ok || answer.keyDown.payload === Keys.KEY_ENTER) {
     yield put(Actions.sysGameQuit());
   }
@@ -63,7 +76,10 @@ export function* slackTimeChecker() {
       keyDown: take(Types.UI_KEY_DOWN),
       timeTick: take(Types.SYS_TIME_TICK),
     });
-    if (slackTime === 0 || (keyDown && keyDown.payload === Keys.KEY_ARROW_DOWN)) {
+    if (
+      slackTime === 0 ||
+      (keyDown && keyDown.payload === Keys.KEY_ARROW_DOWN)
+    ) {
       // 固定時間中に↓を押したとき、もしくは
       // 固定時間終了時には、このpieceは底に落下したことが確定。
       yield put(Actions.sysFixDownPiece());
@@ -77,7 +93,8 @@ export function* slackTimeChecker() {
 
 export function* pieceFall() {
   let piece = new Piece(3, 1, Math.floor(Math.random() * 7), 0);
-  let board = yield select((state => state.board));
+  let board = yield select(state => state.board);
+  console.log(board);
   if (!piece.canPut(board)) {
     // トップ位置に置けなければゲームオーバー
     yield put(Actions.sysGameOver());
@@ -92,7 +109,8 @@ export function* pieceFall() {
       fixDown: take(Types.SYS_FIX_DOWN_PIECE),
       timeTick: take(Types.SYS_TIME_TICK),
     });
-    if (fixDown) { // this piece is fall to bottom or other piece, and fixed
+    if (fixDown) {
+      // this piece is fall to bottom or other piece, and fixed
       board = piece.setTo(board);
       const [newBoard, clearedLines] = Board.clearLines(board);
       board = newBoard;
@@ -120,10 +138,15 @@ export function* pieceFall() {
     }
     if (keyDown || (timeTick && timeTick.payload % 10 === 0)) {
       // calcurate next piece position & spin
-      const nextPiece = piece.nextPiece((keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN);
+      const nextPiece = piece.nextPiece(
+        (keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN
+      );
       if (nextPiece.canPut(board)) {
-        if (nextPiece !== piece && keyDown && keyDown.payload ===
-            Keys.KEY_ARROW_DOWN) {
+        if (
+          nextPiece !== piece &&
+          keyDown &&
+          keyDown.payload === Keys.KEY_ARROW_DOWN
+        ) {
           yield put(Actions.addScore(1));
         }
         piece = nextPiece;
@@ -135,6 +158,7 @@ export function* pieceFall() {
 
 export function* game() {
   yield call(() => Promise.resolve(Router.push('/game')));
+  console.log('clear board');
   yield put(Actions.setBoard(Board.INITIAL_BOARD));
   yield put(Actions.setScore(0));
   let timeTickGeneratorTask;
@@ -154,13 +178,14 @@ export default function* rootSaga() {
   }
   yield call(() => Promise.resolve(Router.push('/')));
   while (true) {
+    // デモ画面
     while ((yield take(Types.UI_KEY_DOWN)).payload !== Keys.KEY_S) {
       /* do nothinng */
     }
     // ゲーム開始
     yield put(Actions.setGameRunning(true));
     yield fork(game);
-    // ゲームオーバー、もしくはQ押下で終了
+    // ゲームオーバー、もしくはQ押下を待つ
     const gameResult = yield race({
       over: take(Types.SYS_GAME_OVER),
       quit: take(Types.SYS_GAME_QUIT),
