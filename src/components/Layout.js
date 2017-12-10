@@ -5,7 +5,7 @@ import * as Actions from '../actions';
 
 const Layout = props => {
   const { dispatch, modal } = props;
-
+  console.log(props);
   const {
     okButtonText = 'OK',
     cancelButtonText = 'Cancel',
@@ -28,4 +28,4 @@ const Layout = props => {
   );
 };
 
-export default connect(state => state, dispatch => ({ dispatch }))(Layout);
+export default connect(state => ({ modal: state.main.modal }))(Layout);

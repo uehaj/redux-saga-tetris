@@ -52,4 +52,6 @@ const Game = props => (
   </Layout>
 );
 
-export default connect(state => state)(Game);
+export default connect(store => ({
+  board: store.main.board,
+}))(Game);

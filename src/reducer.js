@@ -5,6 +5,8 @@ const initialState = {
   board: Board.INITIAL_BOARD,
   modal: {
     show: false,
+    okButtonText: 'OK',
+    cancelButtonText: 'Cancel',
   },
   score: 0,
   highScore: 0,
