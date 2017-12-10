@@ -1,5 +1,5 @@
+import React from 'react';
 import { connect } from 'react-redux';
-import withRedux from '../utils/withRedux';
 import KeyHandler from '../components/KeyHandler';
 import Layout from '../components/Layout';
 import * as Keys from '../game/keys';
@@ -9,10 +9,11 @@ import PlayField from '../components/PlayField';
  *
  * @param {*} props
  */
-const Game = props =>
+const Game = props => (
   <Layout>
     <div>
-      <style jsx>{`
+      <style jsx="true">
+        {`
           .container {
             display: flex;
             flex-flow: row nowrap;
@@ -38,20 +39,17 @@ const Game = props =>
             padding: 1em;
             background-color: #111133;
           }
-      `}
+        `}
       </style>
       <KeyHandler captureKeys={[...Keys.ALL]} />
       <div className="container">
         <div className="info">
-          <div className="info-item">
-            SCORE {props.score}
-          </div>
+          <div className="info-item">SCORE {props.score}</div>
         </div>
-        <div className="playfield">
-          {props.board && <PlayField />}
-        </div>
+        <div className="playfield">{props.board && <PlayField />}</div>
       </div>
     </div>
-  </Layout>;
+  </Layout>
+);
 
-export default withRedux(connect(state => state, dispatch => ({ dispatch }))(Game));
+export default connect(state => state)(Game);

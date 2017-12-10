@@ -1,9 +1,9 @@
+import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import * as Actions from '../actions';
 
 class KeyHandler extends Component {
-
   constructor(props) {
     super(props);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -26,7 +26,7 @@ class KeyHandler extends Component {
   }
 
   render() {
-    return (<div />);
+    return <div />;
   }
 }
 

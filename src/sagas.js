@@ -9,7 +9,6 @@ import {
   select,
   cancel,
 } from 'redux-saga/effects';
-import Router from 'next/router';
 import 'seedrandom';
 import * as Config from './game/config';
 import * as Actions from './actions';
@@ -157,7 +156,7 @@ export function* pieceFall() {
 }
 
 export function* game() {
-  yield call(() => Promise.resolve(Router.push('/game')));
+  //yield call(() => Promise.resolve(Router.push('/game')));
   console.log('clear board');
   yield put(Actions.setBoard(Board.INITIAL_BOARD));
   yield put(Actions.setScore(0));
@@ -176,7 +175,7 @@ export default function* rootSaga() {
   if (Config.PREDICTABLE_RANDOM) {
     Math.seedrandom('sagaris');
   }
-  yield call(() => Promise.resolve(Router.push('/')));
+  //yield call(() => Promise.resolve(Router.push('/')));
   while (true) {
     // デモ画面
     while ((yield take(Types.UI_KEY_DOWN)).payload !== Keys.KEY_S) {
@@ -195,6 +194,6 @@ export default function* rootSaga() {
       // ゲームオーバー画面(確認ダイアログ)表示
       yield* gameOver();
     }
-    yield call(() => Promise.resolve(Router.push('/')));
+    //yield call(() => Promise.resolve(Router.push('/')));
   }
 }

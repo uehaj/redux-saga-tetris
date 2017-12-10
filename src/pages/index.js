@@ -1,6 +1,5 @@
+import React from 'react';
 import { connect } from 'react-redux';
-// import withRedux from '../utils/withRedux';
-import { withReduxSaga } from '../store';
 import Layout from '../components/Layout';
 import KeyHandler from '../components/KeyHandler';
 import * as Keys from '../game/keys';
@@ -8,7 +7,7 @@ import * as Keys from '../game/keys';
 // eslint-disable-next-line no-unused-vars
 const Index = props => (
   <Layout>
-    <style jsx>
+    <style jsx="true">
       {`
         .container {
           display: flex;
@@ -34,6 +33,4 @@ const Index = props => (
   </Layout>
 );
 
-export default withRedux(
-  connect(state => state, dispatch => ({ dispatch }))(Index)
-);
+export default connect(state => state)(Index);
