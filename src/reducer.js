@@ -1,5 +1,5 @@
-import * as Types from '../types';
-import * as Board from '../game/board';
+import * as Types from './types';
+import * as Board from './game/board';
 
 const initialState = {
   board: Board.INITIAL_BOARD,
@@ -7,10 +7,10 @@ const initialState = {
     show: false,
   },
   score: 0,
-  highScore: 0
+  highScore: 0,
 };
 
-export default(state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case Types.UI_BUTTON_CLICKED:
       return state;
