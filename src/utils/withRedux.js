@@ -11,18 +11,19 @@ import * as Config from '../game/config';
 
 const initStore = (red, isServer) => {
   // server side rendering or first time in browser
-  if ((isServer && typeof window === 'undefined') || (typeof window !== 'undefined' && !window.store)) {
+  if (
+    (isServer && typeof window === 'undefined') ||
+    (typeof window !== 'undefined' && !window.store)
+  ) {
     const sagaMonitor = createSagaMonitor();
     const sagaMiddleware = createSagaMiddleware({ sagaMonitor });
     const middleWare = Config.ENABLE_REDUX_LOGGER
-          ? applyMiddleware(sagaMiddleware, createLogger())
-          : applyMiddleware(sagaMiddleware);
-    const result = createStore(red,
-                               composeWithDevTools(
-                                 middleWare,
-                               ),
-                              );
-    sagaMiddleware.run(rootSaga);
+      ? applyMiddleware(sagaMiddleware, createLogger())
+      : applyMiddleware(sagaMiddleware);
+    const result = createStore(red, composeWithDevTools(middleWare));
+    if (!isServer) {
+      sagaMiddleware.run(rootSaga);
+    }
     if (typeof window !== 'undefined' && !window.store) {
       window.store = result;
       window.sagaMonitor = sagaMonitor;
@@ -51,11 +52,14 @@ export default function withRedux(ReduxComponent) {
     }
 
     render() {
+      console.log('this.store=', this.store);
       return (
         <Provider store={this.store}>
           <div>
             <ReduxComponent {...this.props} />
-            { Config.ENABLE_SAGA_MONITOR && <DockableSagaView monitor={this.sagaMonitor} /> }
+            {Config.ENABLE_SAGA_MONITOR && (
+              <DockableSagaView monitor={this.sagaMonitor} />
+            )}
           </div>
         </Provider>
       );
