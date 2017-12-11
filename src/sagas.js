@@ -1,14 +1,5 @@
 /* eslint no-constant-condition: ["error", { "checkLoops": false }] */
-import { delay } from 'redux-saga';
-import {
-  race,
-  take,
-  put,
-  call,
-  fork,
-  select,
-  cancel,
-} from 'redux-saga/effects';
+import { race, take, put, fork, select, cancel } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import 'seedrandom';
 
@@ -18,8 +9,8 @@ import * as Types from './types';
 import * as Keys from './game/keys';
 import * as Board from './game/board';
 import Piece from './game/Piece';
+import { dispatch } from './store';
 
-const TICK = 100; // 100ms
 const SLACK_TIME = 5; // 500ms
 
 // show modal dialog synchronously
@@ -32,7 +23,6 @@ export function* showModal({ title, cancelable = false }) {
       cancel: take(Types.UI_MODAL_CANCEL),
       keyDown: take(Types.UI_KEY_DOWN),
     });
-    console.log('answer=', answer);
   } while (
     !answer.ok &&
     !answer.cancel &&
@@ -62,15 +52,6 @@ export function* gameQuit() {
 
 export function* gamePause() {
   yield* showModal({ title: 'PAUSE' });
-}
-
-export function* timeTickGenerator() {
-  let tick = 0;
-  while (true) {
-    yield call(delay, TICK);
-    yield put(Actions.sysTimeTick(tick));
-    tick += 1;
-  }
 }
 
 // 落下しおわっても左右の操作や回転を許す「固定時間」の処理。
@@ -140,7 +121,7 @@ export function* pieceFall() {
         yield* gamePause();
       }
     }
-    if (keyDown || (timeTick && timeTick.payload % 10 === 0)) {
+    if (keyDown || (timeTick && timeTick.payload % 20 === 0)) {
       // calcurate next piece position & spin
       const nextPiece = piece.nextPiece(
         (keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN
@@ -161,19 +142,26 @@ export function* pieceFall() {
 }
 
 export function* game() {
-  //yield call(() => Promise.resolve(Router.push('/game')));
   yield put(push('/game'));
 
   yield put(Actions.setBoard(Board.INITIAL_BOARD));
   yield put(Actions.setScore(0));
-  let timeTickGeneratorTask;
+  //let timeTickGeneratorTask;
+  let requestId;
+  let n = 0;
+
   try {
-    timeTickGeneratorTask = yield fork(timeTickGenerator);
+    const loop = arg => {
+      dispatch(Actions.sysTimeTick(n++));
+      requestId = window.requestAnimationFrame(loop);
+    };
+    window.requestAnimationFrame(loop);
+
     while (yield select(state => state.main.gameRunning)) {
       yield* pieceFall();
     }
   } finally {
-    yield cancel(timeTickGeneratorTask);
+    window.cancelAnimationFrame(requestId);
   }
 }
 
@@ -181,7 +169,6 @@ export default function* rootSaga() {
   if (Config.PREDICTABLE_RANDOM) {
     Math.seedrandom('sagaris');
   }
-  //yield call(() => Promise.resolve(Router.push('/')));
   yield put(push('/'));
 
   while (true) {
@@ -203,7 +190,6 @@ export default function* rootSaga() {
       // ゲームオーバー画面(確認ダイアログ)表示
       yield* gameOver();
     }
-    //yield call(() => Promise.resolve(Router.push('/')));
     yield put(push('/'));
   }
 }
