@@ -9,9 +9,6 @@ type Props = {
   history: any,
 };
 
-console.log('ConnectedRouter=', ConnectedRouter);
-console.log('Route=', Route);
-
 export default (props: Props) => (
   <ConnectedRouter history={props.history}>
     <div>

@@ -12,7 +12,7 @@ import PlayField from '../components/PlayField';
 const Game = props => (
   <Layout>
     <div>
-      <style jsx="true">
+      <style>
         {`
           .container {
             display: flex;
@@ -54,4 +54,5 @@ const Game = props => (
 
 export default connect(store => ({
   board: store.main.board,
+  score: store.main.score,
 }))(Game);

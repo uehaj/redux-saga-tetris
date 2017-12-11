@@ -5,7 +5,6 @@ import * as Actions from '../actions';
 
 const Layout = props => {
   const { dispatch, modal } = props;
-  console.log(props);
   const {
     okButtonText = 'OK',
     cancelButtonText = 'Cancel',
