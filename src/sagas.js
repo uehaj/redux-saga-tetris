@@ -9,7 +9,9 @@ import {
   select,
   cancel,
 } from 'redux-saga/effects';
+import { push } from 'react-router-redux';
 import 'seedrandom';
+
 import * as Config from './game/config';
 import * as Actions from './actions';
 import * as Types from './types';
@@ -30,6 +32,7 @@ export function* showModal({ title, cancelable = false }) {
       cancel: take(Types.UI_MODAL_CANCEL),
       keyDown: take(Types.UI_KEY_DOWN),
     });
+    console.log('answer=', answer);
   } while (
     !answer.ok &&
     !answer.cancel &&
@@ -49,7 +52,10 @@ export function* gameQuit() {
     title: 'QUIT THE GAME?',
     cancelable: true,
   });
-  if (answer.ok || answer.keyDown.payload === Keys.KEY_ENTER) {
+  if (
+    answer.ok ||
+    (answer.keyDown && answer.keyDown.payload === Keys.KEY_ENTER)
+  ) {
     yield put(Actions.sysGameQuit());
   }
 }
@@ -92,8 +98,7 @@ export function* slackTimeChecker() {
 
 export function* pieceFall() {
   let piece = new Piece(3, 1, Math.floor(Math.random() * 7), 0);
-  let board = yield select(state => state.board);
-  console.log(board);
+  let board = yield select(state => state.main.board);
   if (!piece.canPut(board)) {
     // トップ位置に置けなければゲームオーバー
     yield put(Actions.sysGameOver());
@@ -157,13 +162,14 @@ export function* pieceFall() {
 
 export function* game() {
   //yield call(() => Promise.resolve(Router.push('/game')));
-  console.log('clear board');
+  yield put(push('/game'));
+
   yield put(Actions.setBoard(Board.INITIAL_BOARD));
   yield put(Actions.setScore(0));
   let timeTickGeneratorTask;
   try {
     timeTickGeneratorTask = yield fork(timeTickGenerator);
-    while (yield select(state => state.gameRunning)) {
+    while (yield select(state => state.main.gameRunning)) {
       yield* pieceFall();
     }
   } finally {
@@ -176,6 +182,8 @@ export default function* rootSaga() {
     Math.seedrandom('sagaris');
   }
   //yield call(() => Promise.resolve(Router.push('/')));
+  yield put(push('/'));
+
   while (true) {
     // デモ画面
     while ((yield take(Types.UI_KEY_DOWN)).payload !== Keys.KEY_S) {
@@ -183,6 +191,7 @@ export default function* rootSaga() {
     }
     // ゲーム開始
     yield put(Actions.setGameRunning(true));
+
     yield fork(game);
     // ゲームオーバー、もしくはQ押下を待つ
     const gameResult = yield race({
@@ -195,5 +204,6 @@ export default function* rootSaga() {
       yield* gameOver();
     }
     //yield call(() => Promise.resolve(Router.push('/')));
+    yield put(push('/'));
   }
 }

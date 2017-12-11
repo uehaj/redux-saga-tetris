@@ -9,7 +9,7 @@ const PlayField = props => {
     : props.board;
   return (
     <div>
-      <style jsx="true">
+      <style>
         {`
           .board {
             height: 14px;

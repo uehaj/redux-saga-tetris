@@ -7,7 +7,7 @@ import * as Keys from '../game/keys';
 // eslint-disable-next-line no-unused-vars
 const Top = props => (
   <Layout>
-    <style jsx="true">
+    <style>
       {`
         .container {
           display: flex;
@@ -33,4 +33,4 @@ const Top = props => (
   </Layout>
 );
 
-export default connect(state => ({ highStore: state.main.highScore }))(Top);
+export default connect(state => ({ highScore: state.main.highScore }))(Top);

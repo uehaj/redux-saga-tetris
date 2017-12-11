@@ -3,7 +3,7 @@ import React from 'react';
 
 export default props => (
   <div>
-    <style jsx="true">
+    <style>
       {`
         .button {
           padding: 10px;
