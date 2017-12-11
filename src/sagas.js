@@ -1,5 +1,13 @@
 /* eslint no-constant-condition: ["error", { "checkLoops": false }] */
-import { race, take, put, fork, select, cancel } from 'redux-saga/effects';
+import {
+  race,
+  take,
+  put,
+  fork,
+  select,
+  cancel,
+  takeLatest,
+} from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import 'seedrandom';
 
@@ -11,7 +19,7 @@ import * as Board from './game/board';
 import Piece from './game/Piece';
 import { dispatch } from './store';
 
-const SLACK_TIME = 5; // 500ms
+const SLACK_TIME = 30; // 500ms
 
 // show modal dialog synchronously
 export function* showModal({ title, cancelable = false }) {
@@ -121,7 +129,7 @@ export function* pieceFall() {
         yield* gamePause();
       }
     }
-    if (keyDown || (timeTick && timeTick.payload % 20 === 0)) {
+    if (keyDown || (timeTick && timeTick.payload % 60 === 0)) {
       // calcurate next piece position & spin
       const nextPiece = piece.nextPiece(
         (keyDown && keyDown.payload) || Keys.KEY_ARROW_DOWN
@@ -165,7 +173,7 @@ export function* game() {
   }
 }
 
-export default function* rootSaga() {
+function* demoScreen() {
   if (Config.PREDICTABLE_RANDOM) {
     Math.seedrandom('sagaris');
   }
@@ -178,8 +186,7 @@ export default function* rootSaga() {
     }
     // ゲーム開始
     yield put(Actions.setGameRunning(true));
-
-    yield fork(game);
+    yield put(Actions.sysGameStart());
     // ゲームオーバー、もしくはQ押下を待つ
     const gameResult = yield race({
       over: take(Types.SYS_GAME_OVER),
@@ -192,4 +199,9 @@ export default function* rootSaga() {
     }
     yield put(push('/'));
   }
+}
+
+export default function* rootSaga() {
+  yield fork(demoScreen);
+  yield takeLatest(Types.SYS_GAME_START, game);
 }
